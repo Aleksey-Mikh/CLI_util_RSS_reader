@@ -1,5 +1,7 @@
 import requests
-from bs4 import BeautifulSoup
+import json
+
+from Homework.serializers import serialization_data
 
 
 URL = "https://lenta.ru/rss"
@@ -16,10 +18,15 @@ def save_in_file(data, path):
 
 
 def read_file(path):
-    with open(path) as file:
+    with open(path, encoding='utf-8') as file:
         data = file.read()
 
     return data
+
+
+def save_json(data, path):
+    with open(path, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
 
 def get_html(url):
@@ -27,19 +34,15 @@ def get_html(url):
     return response
 
 
-def get_data(data):
-    pass
-
-
 def parse():
     html = get_html(URL)
     if html.status_code == 200:
-        save_in_file(html.text, "lenta_rss.xml")
-        # data = read_file("rss.xml")
-
+        # save_in_file(html.text, "lenta_rss.html")
+        data = read_file("lenta_rss.html")
+        serializable_data = serialization_data(data)
+        save_json(serializable_data, "data.json")
     else:
         print("Error")
 
+
 parse()
-
-
