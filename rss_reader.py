@@ -1,9 +1,11 @@
 import requests
 import json
+import argparse
 
-from Homework.serializers import serialization_data
+from serializers import serialization_data
 
 
+PROGRAM_VERSION = 1.2
 URL = "https://lenta.ru/rss"
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -45,4 +47,15 @@ def parse():
         print("Error")
 
 
-parse()
+def main():
+    parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
+    parser.add_argument("source", type=str, help="Print version info")
+    parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
+    parser.add_argument("--json",  metavar='', help="Print result as JSON in stdout")
+    parser.add_argument("--verbose",  metavar='', help="Outputs verbose status messages")
+    parser.add_argument("--limit", help="Limit news topics if this parameter provided")
+    args = parser.parse_args()
+    print(args)
+
+
+main()
