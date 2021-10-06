@@ -5,7 +5,7 @@ def serialization_data(data):
     soup = BeautifulSoup(data, 'xml')
     items = soup.find_all('item')
     list_items = list()
-    for item in items[2:3]:
+    for item in items[:1]:
         list_items.append(serialization_item(item))
 
     return list_items
@@ -33,6 +33,13 @@ def serialization_item(item):
         description = soup.get_text()
     except AttributeError:
         description = None
+
+    try:
+        content_encoded = item.find("content:encoded").get_text(strip=True)
+        soup = BeautifulSoup(content_encoded, 'html.parser')
+        content_encoded = soup.get_text()
+    except AttributeError:
+        content_encoded = None
 
     try:
         list_categories = []
@@ -64,21 +71,30 @@ def serialization_item(item):
         pub_date = None
 
     try:
-        source = item.find("source").get_text(strip=True)
+        list_source = []
+        source_content = item.find("source").get_text(strip=True)
+
+        try:
+            source_url = item.find("source").get("url")
+        except AttributeError:
+            source_url = ""
+
+        list_source.extend([source_content, source_url])
     except AttributeError:
-        source = None
+        list_source = None
 
     item_dict = {
         "title": title,
         "link": link,
         "author": author,
         "description": description,
+        "content_encoded": content_encoded,
         "category": list_categories,
         "comments": comments,
         "enclosure": enclosure,
         "guid": guid,
         "pub_date": pub_date,
-        "source": source,
+        "source": list_source,
     }
 
     return item_dict
