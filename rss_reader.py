@@ -23,6 +23,31 @@ HEADERS = {
 }
 
 
+def check_limit_type_value(func):
+
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        try:
+            result.limit = int(result.limit)
+        except ValueError:
+            print("[WARNING] You must enter the number in --limit params.")
+        return result
+
+    return wrapper
+
+
+def start_decorator(func):
+
+    def wrapper(*args, **kwargs):
+        print("---" * 20, "Start Scrapping", "---" * 20, end="\n\n")
+        result = func(*args, **kwargs)
+        print()
+        print("---" * 20, "Stop Scrapping", "---" * 20)
+        return result
+
+    return wrapper
+
+
 class RSSParser:
 
     def __init__(self):
@@ -33,6 +58,7 @@ class RSSParser:
         self.verbose = argparse_params.verbose
 
     @staticmethod
+    @check_limit_type_value
     def _init_argparse():
         parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
         parser.add_argument("source", type=str, help="Print version info")
@@ -52,7 +78,7 @@ class RSSParser:
     def parsing(self):
         response = self._get_html()
         if response.status_code == 200:
-            serializable_data = serialization_data(response.text)
+            serializable_data = serialization_data(response.text, self.limit, self.verbose)
             self._save_data(serializable_data)
         else:
             self._check_error_status_code(response.status_code)
@@ -67,13 +93,13 @@ class RSSParser:
     def _check_error_status_code(self, status_code):
         if 400 <= status_code <= 499:
             if status_code == 404:
-                self._print_error(f"{self.source} Not Found")
+                self._print_error(f"[WARNING] {self.source} Not Found")
             else:
-                self._print_error("Error seems to have been caused by the client. Check url which you give.")
+                self._print_error("[WARNING] Error seems to have been caused by the client. Check url which you give.")
         elif 500 <= status_code <= 599:
-            self._print_error("The server failed to fulfil a request")
+            self._print_error("[WARNING] The server failed to fulfil a request")
         else:
-            self._print_error("Error which can't be processed because status code don't defined")
+            self._print_error("[WARNING] Error which can't be processed because status code don't defined")
 
     @staticmethod
     def _print_error(message):
@@ -85,6 +111,11 @@ class RSSParser:
             json.dump(serializable_data, file, indent=4, ensure_ascii=False)
 
 
-if __name__ == '__main__':
+@start_decorator
+def main():
     reader = RSSParser()
     reader.parsing()
+
+
+if __name__ == '__main__':
+    main()

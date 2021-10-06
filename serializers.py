@@ -1,14 +1,38 @@
+import sys
+
 from bs4 import BeautifulSoup
 
 
-def serialization_data(data):
-    soup = BeautifulSoup(data, 'xml')
-    items = soup.find_all('item')
+def serialization_data(data, limit, verbose):
     list_items = list()
-    for item in items[:1]:
+
+    soup = BeautifulSoup(data, 'xml')
+    check_rss_version(soup)
+
+    items = soup.find_all('item')
+    count_news = len(items)
+    limit = check_limit(limit, count_news)
+
+    for item in items[:limit]:
         list_items.append(serialization_item(item))
 
     return list_items
+
+
+def check_rss_version(soup):
+    try:
+        version = soup.find("rss").get("version")
+    except AttributeError:
+        print("[WARNING] URL what has been taken isn't RSS", end="\n\n")
+        print("[INFO] If your sure that this URL is right, please check your url, "
+              "maybe it use old rss version and parser don't understood it.")
+        sys.exit()  # TODO переделать так как не появлеятся нижнияя черта программы
+
+
+def check_limit(limit, count_news):
+    if limit > count_news:
+        limit = count_news
+    return limit
 
 
 def serialization_item(item):
