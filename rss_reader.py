@@ -13,7 +13,6 @@ URL = [
     'https://rss.art19.com/apology-line',
     'https://news.un.org/feed/subscribe/ru/news/region/europe/feed/rss.xml',
     'http://avangard-93.ru/news/rss',
-    'http://avangard-93.ru/news/rss',
     'http://www.forbes.com/most-popular/feed/',
 ]
 HEADERS = {
@@ -24,59 +23,68 @@ HEADERS = {
 }
 
 
-def save_in_file(data, path):
-    print(data)
-    with open(path, "w", encoding="utf-8") as file:
-        file.writelines(data)
+class RSSParser:
 
+    def __init__(self):
+        argparse_params = self._init_argparse()
+        self.source = argparse_params.source
+        self.limit = argparse_params.limit
+        self.json = argparse_params.json
+        self.verbose = argparse_params.verbose
 
-def read_file(path):
-    with open(path, encoding='utf-8') as file:
-        data = file.read()
+    @staticmethod
+    def _init_argparse():
+        parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
+        parser.add_argument("source", type=str, help="Print version info")
+        parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
+        parser.add_argument("--json", action='store_true', help="Print result as JSON in stdout")
+        parser.add_argument("--verbose", action='store_true', help="Outputs verbose status messages")
+        parser.add_argument("--limit", help="Limit news topics if this parameter provided")
 
-    return data
+        args, unknown = parser.parse_known_args()
 
-
-def save_json(data, path):
-    with open(path, 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
-
-
-def get_html(url):
-    response = requests.get(url, headers=HEADERS)
-    response.encoding = response.apparent_encoding
-    return response
-
-
-def parse():
-    data_for_json = []
-    for url in URL:
-        print(url)
-        html = get_html(url)
-        if html.status_code == 200:
-            # save_in_file(html.text, "lenta_rss.xml")
-            # data = read_file("vedomosti_rss.xml")
-            serializable_data = serialization_data(html.text)
-            data_for_json.extend(serializable_data)
+        # If --version option is specified app should just print its version and stop.
+        if "—version" in unknown:
+            parser.parse_args(["--version"])
         else:
-            print("Error")
+            return args
 
-    save_json(data_for_json, "data.json")
+    def parsing(self):
+        response = self._get_html()
+        if response.status_code == 200:
+            serializable_data = serialization_data(response.text)
+            self._save_data(serializable_data)
+        else:
+            self._check_error_status_code(response.status_code)
+
+    def _get_html(self):
+        response = requests.get(self.source, headers=HEADERS)
+
+        # if site gives invalid encoding this line trying to correct encoding
+        response.encoding = response.apparent_encoding
+        return response
+
+    def _check_error_status_code(self, status_code):
+        if 400 <= status_code <= 499:
+            if status_code == 404:
+                self._print_error(f"{self.source} Not Found")
+            else:
+                self._print_error("Error seems to have been caused by the client. Check url which you give.")
+        elif 500 <= status_code <= 599:
+            self._print_error("The server failed to fulfil a request")
+        else:
+            self._print_error("Error which can't be processed because status code don't defined")
+
+    @staticmethod
+    def _print_error(message):
+        print(message)
+
+    @staticmethod
+    def _save_data(serializable_data):
+        with open("data.json", "w", encoding="utf-8") as file:
+            json.dump(serializable_data, file, indent=4, ensure_ascii=False)
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
-    parser.add_argument("source", type=str, help="Print version info")
-    parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
-    parser.add_argument("--json", action='store_true', help="Print result as JSON in stdout")
-    parser.add_argument("--verbose", action='store_true', help="Outputs verbose status messages")
-    parser.add_argument("--limit", help="Limit news topics if this parameter provided")
-
-    args, unknown = parser.parse_known_args()
-    print(args)
-    print(unknown)
-    if "—version" in unknown:
-        parser.parse_args(["--version"])
-
-
-parse()
+if __name__ == '__main__':
+    reader = RSSParser()
+    reader.parsing()
