@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 
 def serialization_data(data):
-    soup = BeautifulSoup(data, 'html.parser')
+    soup = BeautifulSoup(data, 'xml')
     items = soup.find_all('item')
     list_items = list()
     for item in items[2:3]:
@@ -18,20 +18,30 @@ def serialization_item(item):
         title = None
 
     try:
+        link = item.find("link").get_text(strip=True)
+    except AttributeError:
+        link = None
+
+    try:
         author = item.find("author").get_text(strip=True)
     except AttributeError:
         author = None
 
     try:
-        description = item.find("description")
-        description = description.get_text(strip=True)
+        description = item.find("description").get_text(strip=True)
+        soup = BeautifulSoup(description, 'html.parser')
+        description = soup.get_text()
     except AttributeError:
         description = None
 
     try:
-        category = item.find("category").get_text(strip=True)
+        list_categories = []
+        categories = item.find_all("category")
+        for category in categories:
+            category_content = category.get_text(strip=True)
+            list_categories.append(category_content)
     except AttributeError:
-        category = None
+        list_categories = None
 
     try:
         comments = item.find("comments").get_text(strip=True)
@@ -49,7 +59,7 @@ def serialization_item(item):
         guid = None
 
     try:
-        pub_date = item.find("pubdate").get_text(strip=True)
+        pub_date = item.find("pubDate").get_text(strip=True)
     except AttributeError:
         pub_date = None
 
@@ -60,9 +70,10 @@ def serialization_item(item):
 
     item_dict = {
         "title": title,
-        "description": author,
-        "author": description,
-        "category": category,
+        "link": link,
+        "author": author,
+        "description": description,
+        "category": list_categories,
         "comments": comments,
         "enclosure": enclosure,
         "guid": guid,

@@ -5,16 +5,27 @@ import argparse
 from serializers import serialization_data
 
 
-PROGRAM_VERSION = 1.2
-URL = "https://lenta.ru/rss"
+PROGRAM_VERSION = 0.6
+URL = [
+    "https://people.onliner.by/feed",
+    "https://www.thecipherbrief.com/feed",
+    'https://news.yahoo.com/rss/',
+    'https://rss.art19.com/apology-line',
+    'https://news.un.org/feed/subscribe/ru/news/region/europe/feed/rss.xml',
+    'http://avangard-93.ru/news/rss',
+    'http://avangard-93.ru/news/rss',
+    'http://www.forbes.com/most-popular/feed/',
+]
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
-    "accept": "*/*"
+    "accept": "*/*",
+    "Content-Type": "charset=UTF-8"
 }
 
 
 def save_in_file(data, path):
+    print(data)
     with open(path, "w", encoding="utf-8") as file:
         file.writelines(data)
 
@@ -33,18 +44,24 @@ def save_json(data, path):
 
 def get_html(url):
     response = requests.get(url, headers=HEADERS)
+    response.encoding = response.apparent_encoding
     return response
 
 
 def parse():
-    html = get_html(URL)
-    if html.status_code == 200:
-        # save_in_file(html.text, "lenta_rss.html")
-        data = read_file("lenta_rss.html")
-        serializable_data = serialization_data(data)
-        save_json(serializable_data, "data.json")
-    else:
-        print("Error")
+    data_for_json = []
+    for url in URL:
+        print(url)
+        html = get_html(url)
+        if html.status_code == 200:
+            # save_in_file(html.text, "lenta_rss.xml")
+            # data = read_file("vedomosti_rss.xml")
+            serializable_data = serialization_data(html.text)
+            data_for_json.extend(serializable_data)
+        else:
+            print("Error")
+
+    save_json(data_for_json, "data.json")
 
 
 def main():
@@ -54,8 +71,12 @@ def main():
     parser.add_argument("--json", action='store_true', help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action='store_true', help="Outputs verbose status messages")
     parser.add_argument("--limit", help="Limit news topics if this parameter provided")
-    args = parser.parse_args()
+
+    args, unknown = parser.parse_known_args()
     print(args)
+    print(unknown)
+    if "—version" in unknown:
+        parser.parse_args(["--version"])
 
 
-main()
+parse()
