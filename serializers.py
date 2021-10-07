@@ -2,12 +2,15 @@ import sys
 
 from bs4 import BeautifulSoup
 
+from print_functions import error_print, info_print, warning_print
+
 
 def serialization_data(data, limit, verbose):
     list_items = list()
 
     soup = BeautifulSoup(data, 'xml')
-    check_rss_version(soup)
+    if not checking_the_rss_is_the_source(soup, verbose):
+        return None
 
     items = soup.find_all('item')
     count_news = len(items)
@@ -19,18 +22,20 @@ def serialization_data(data, limit, verbose):
     return list_items
 
 
-def check_rss_version(soup):
+def checking_the_rss_is_the_source(soup, verbose):
     try:
-        version = soup.find("rss").get("version")
+        soup.find("rss").get("version")
+        return True
     except AttributeError:
-        print("[WARNING] URL what has been taken isn't RSS", end="\n\n")
-        print("[INFO] If your sure that this URL is right, please check your url, "
-              "maybe it use old rss version and parser don't understood it.")
-        sys.exit()  # TODO переделать так как не появлеятся нижнияя черта программы
+        warning_print("URL what has been taken isn't RSS\n")
+        if verbose:
+            info_print("If your sure that this URL is right, please check your url, "
+                       "maybe it use old rss version and parser don't understood it.")
+        return False
 
 
 def check_limit(limit, count_news):
-    if limit > count_news:
+    if limit is None or limit > count_news:
         limit = count_news
     return limit
 

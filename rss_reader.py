@@ -3,6 +3,7 @@ import json
 import argparse
 
 from serializers import serialization_data
+from print_functions import info_print, warning_print, error_print
 
 
 PROGRAM_VERSION = 0.6
@@ -28,9 +29,10 @@ def check_limit_type_value(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         try:
-            result.limit = int(result.limit)
+            if result.limit is not None:
+                result.limit = int(result.limit)
         except ValueError:
-            print("[WARNING] You must enter the number in --limit params.")
+            warning_print("You must enter the number in --limit params.")
         return result
 
     return wrapper
@@ -44,6 +46,18 @@ def start_decorator(func):
         print()
         print("---" * 20, "Stop Scrapping", "---" * 20)
         return result
+
+    return wrapper
+
+
+def intercept_errors(func):
+
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as exc:
+            error_print(exc)
+            return None
 
     return wrapper
 
@@ -77,12 +91,23 @@ class RSSParser:
 
     def parsing(self):
         response = self._get_html()
+
+        if response is None:
+            if self.verbose:
+                error_print(f"\nProgram stop running with error, when it try to get information from {self.source}")
+            return False
+
         if response.status_code == 200:
             serializable_data = serialization_data(response.text, self.limit, self.verbose)
+
+            if serializable_data is None:
+                return False
+
             self._save_data(serializable_data)
         else:
             self._check_error_status_code(response.status_code)
 
+    @intercept_errors
     def _get_html(self):
         response = requests.get(self.source, headers=HEADERS)
 
@@ -93,17 +118,13 @@ class RSSParser:
     def _check_error_status_code(self, status_code):
         if 400 <= status_code <= 499:
             if status_code == 404:
-                self._print_error(f"[WARNING] {self.source} Not Found")
+                error_print(f"{self.source} Not Found")
             else:
-                self._print_error("[WARNING] Error seems to have been caused by the client. Check url which you give.")
+                error_print("Error seems to have been caused by the client. Check url which you give.")
         elif 500 <= status_code <= 599:
-            self._print_error("[WARNING] The server failed to fulfil a request")
+            error_print("The server failed to fulfil a request")
         else:
-            self._print_error("[WARNING] Error which can't be processed because status code don't defined")
-
-    @staticmethod
-    def _print_error(message):
-        print(message)
+            error_print("Error which can't be processed because status code don't defined")
 
     @staticmethod
     def _save_data(serializable_data):
