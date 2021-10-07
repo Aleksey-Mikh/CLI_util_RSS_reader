@@ -1,5 +1,3 @@
-import sys
-
 from bs4 import BeautifulSoup
 
 from print_functions import error_print, info_print, warning_print

@@ -4,6 +4,7 @@ import argparse
 
 from serializers import serialization_data
 from print_functions import info_print, warning_print, error_print
+from decorators import check_limit_type_value, start_decorator, intercept_errors
 
 
 PROGRAM_VERSION = 0.6
@@ -24,42 +25,7 @@ HEADERS = {
 }
 
 
-def check_limit_type_value(func):
 
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        try:
-            if result.limit is not None:
-                result.limit = int(result.limit)
-        except ValueError:
-            warning_print("You must enter the number in --limit params.")
-        return result
-
-    return wrapper
-
-
-def start_decorator(func):
-
-    def wrapper(*args, **kwargs):
-        print("---" * 20, "Start Scrapping", "---" * 20, end="\n\n")
-        result = func(*args, **kwargs)
-        print()
-        print("---" * 20, "Stop Scrapping", "---" * 20)
-        return result
-
-    return wrapper
-
-
-def intercept_errors(func):
-
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as exc:
-            error_print(exc)
-            return None
-
-    return wrapper
 
 
 class RSSParser:
