@@ -7,20 +7,39 @@ def serialization_data(data, limit, verbose):
     list_items = list()
 
     soup = BeautifulSoup(data, 'xml')
-    if not checking_the_rss_is_the_source(soup, verbose):
+    if not checking_the_source_is_the_rss(soup, verbose):
         return None
 
     items = soup.find_all('item')
     count_news = len(items)
     limit = check_limit(limit, count_news)
 
+    if verbose:
+        info_print(f"Count of feeds {count_news}")
+    gen = percent_generator(list_items, limit)
+
     for item in items[:limit]:
         list_items.append(serialization_item(item))
+
+        if verbose:
+            next(gen)
 
     return list_items
 
 
-def checking_the_rss_is_the_source(soup, verbose):
+def percent_generator(list_items, limit):
+    percent_of_one_items = 100 / limit
+    percent_of_complete_program = percent_of_one_items
+    while True:
+        info_print(
+            f"Feeds received [{len(list_items)}/{limit}], "
+            f"percent of execution program={int(percent_of_complete_program)}%"
+        )
+        yield
+        percent_of_complete_program += percent_of_one_items
+
+
+def checking_the_source_is_the_rss(soup, verbose):
     try:
         soup.find("rss").get("version")
         return True
