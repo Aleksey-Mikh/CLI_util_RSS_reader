@@ -3,11 +3,11 @@ from bs4 import BeautifulSoup
 from print_functions import error_print, info_print, warning_print
 
 
-def serialization_data(data, limit, verbose):
+def serialization_data(data, limit, verbose, source):
     list_items = list()
 
     soup = BeautifulSoup(data, 'xml')
-    if not checking_the_source_is_the_rss(soup, verbose):
+    if not checking_the_source_is_the_rss(soup, verbose, source):
         return None
 
     items = soup.find_all('item')
@@ -39,15 +39,15 @@ def percent_generator(list_items, limit):
         percent_of_complete_program += percent_of_one_items
 
 
-def checking_the_source_is_the_rss(soup, verbose):
+def checking_the_source_is_the_rss(soup, verbose, source):
     try:
         soup.find("rss").get("version")
         return True
     except AttributeError:
-        warning_print("URL what has been taken isn't RSS")
+        warning_print(f"{source!r} isn't a RSS. Please try to enter a correct URL")
         if verbose:
-            info_print("If your sure that this URL is right, please check your url, "
-                       "maybe it use old rss version and parser don't understood it.")
+            info_print("If your sure that this URL is correct, please check your URL, "
+                       "maybe it use old rss version and parser don't understand it.")
         return False
 
 

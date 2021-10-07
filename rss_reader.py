@@ -64,7 +64,7 @@ class RSSParser:
             return False
 
         if response.status_code == 200:
-            serializable_data = serialization_data(response.text, self.limit, self.verbose)
+            serializable_data = serialization_data(response.text, self.limit, self.verbose, self.source)
 
             if serializable_data is None:
                 return False
@@ -77,7 +77,7 @@ class RSSParser:
     def _get_html(self):
         response = requests.get(self.source, headers=HEADERS)
 
-        # if site gives invalid encoding this line trying to correct encoding
+        # if site gives invalid encoding this line trying to correct it
         response.encoding = response.apparent_encoding
         return response
 
