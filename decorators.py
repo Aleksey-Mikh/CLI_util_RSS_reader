@@ -21,15 +21,15 @@ def start_decorator(func):
         number_of_separators = 20
         print(
             "---" * number_of_separators,
-            "Start Scrapping",
+            "Start Program",
             "---" * number_of_separators,
-            "\n",
+            "\n\n",
         )
         result = func(*args, **kwargs)
+        print()
         print(
-            "\n",
             "---" * number_of_separators,
-            "Stop Scrapping",
+            "Stop Program",
             "---" * number_of_separators,
         )
         return result
@@ -45,5 +45,20 @@ def intercept_errors(func):
         except Exception as exc:
             error_print(exc)
             return None
+
+    return wrapper
+
+
+def verbose_information_about_start_scrapping(func):
+
+    def wrapper(*args, **kwargs):
+        if args[0].verbose:
+            info_print("Start Scrapping")
+            result = func(*args, **kwargs)
+            info_print("Stop Scrapping")
+        else:
+            result = func(*args, **kwargs)
+
+        return result
 
     return wrapper

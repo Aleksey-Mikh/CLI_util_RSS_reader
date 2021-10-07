@@ -4,7 +4,9 @@ import argparse
 
 from serializers import serialization_data
 from print_functions import info_print, warning_print, error_print
-from decorators import check_limit_type_value, start_decorator, intercept_errors
+from decorators import (
+    check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
+)
 
 
 PROGRAM_VERSION = 0.6
@@ -23,9 +25,6 @@ HEADERS = {
     "accept": "*/*",
     "Content-Type": "charset=UTF-8"
 }
-
-
-
 
 
 class RSSParser:
@@ -55,12 +54,13 @@ class RSSParser:
         else:
             return args
 
+    @verbose_information_about_start_scrapping
     def parsing(self):
         response = self._get_html()
 
         if response is None:
             if self.verbose:
-                error_print(f"\nProgram stop running with error, when it try to get information from {self.source}")
+                info_print(f"Program stop running with error, when it try to get information from {self.source!r}")
             return False
 
         if response.status_code == 200:
@@ -84,7 +84,7 @@ class RSSParser:
     def _check_error_status_code(self, status_code):
         if 400 <= status_code <= 499:
             if status_code == 404:
-                error_print(f"{self.source} Not Found")
+                error_print(f"{self.source!r} Not Found")
             else:
                 error_print("Error seems to have been caused by the client. Check url which you give.")
         elif 500 <= status_code <= 599:

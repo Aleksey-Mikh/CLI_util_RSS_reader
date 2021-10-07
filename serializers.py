@@ -25,7 +25,7 @@ def checking_the_rss_is_the_source(soup, verbose):
         soup.find("rss").get("version")
         return True
     except AttributeError:
-        warning_print("URL what has been taken isn't RSS\n")
+        warning_print("URL what has been taken isn't RSS")
         if verbose:
             info_print("If your sure that this URL is right, please check your url, "
                        "maybe it use old rss version and parser don't understood it.")
