@@ -138,7 +138,7 @@ def serialization_item(item):
         except AttributeError:
             source_url = ""
 
-        list_source.extend([source_content, source_url])
+        list_source.extend([source_content + " ", source_url])
     except AttributeError:
         list_source = None
 

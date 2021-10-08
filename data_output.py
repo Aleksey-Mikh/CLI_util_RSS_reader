@@ -6,7 +6,6 @@ def console_output_feeds(feeds):
     channel_title = feeds[0]
     print(f"Channel title: {channel_title['channel_title']}")
     for feed in feeds[1:]:
-        # print('\n\n')
         output_feed(feed)
 
 
@@ -14,9 +13,9 @@ def console_output_feeds(feeds):
 def output_feed(feed):
     i = 0
     for key, value in feed.items():
-        if value is None:
-            i += 1
+        if value is None or value == []:
             line_break(i)
+            i += 1
         else:
             if isinstance(value, list):
                 value = rebuild_value(value)
@@ -40,16 +39,3 @@ def rebuild_value(value):
     value = temp_str
 
     return value
-
-#
-# "title": title,
-# "date": pub_date,
-# "link": link,
-# "author": author,
-# "category": list_categories,
-# "description": description,
-# "more_description": content_encoded,
-# "comments": comments,
-# "media_object": enclosure,
-# "extra_links": guid,
-# "source_feed": list_source,
