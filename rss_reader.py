@@ -4,6 +4,7 @@ import argparse
 
 from serializers import serialization_data
 from print_functions import info_print, warning_print, error_print
+from data_output import console_output_feeds
 from decorators import (
     check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
 )
@@ -35,6 +36,7 @@ class RSSParser:
         self.limit = argparse_params.limit
         self.json = argparse_params.json
         self.verbose = argparse_params.verbose
+        self.serializable_data = None
 
     @staticmethod
     @check_limit_type_value
@@ -64,14 +66,25 @@ class RSSParser:
             return False
 
         if response.status_code == 200:
-            serializable_data = serialization_data(response.text, self.limit, self.verbose, self.source)
+            self.serializable_data = serialization_data(response.text, self.limit, self.verbose, self.source)
 
-            if serializable_data is None:
+            if self.serializable_data is None:
                 return False
+            info_print("Receiving the news was successful")
 
-            self._save_data(serializable_data)
+            self._save_data(self.serializable_data)
+
         else:
             self._check_error_status_code(response.status_code)
+
+    def print_data_in_console(self):
+        if self.serializable_data is None:
+            return False
+
+        if self.json:
+            pass
+        else:
+            console_output_feeds(self.serializable_data)
 
     @intercept_errors
     def _get_html(self):
@@ -102,6 +115,7 @@ class RSSParser:
 def main():
     reader = RSSParser()
     reader.parsing()
+    reader.print_data_in_console()
 
 
 if __name__ == '__main__':

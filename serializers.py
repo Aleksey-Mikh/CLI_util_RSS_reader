@@ -6,11 +6,14 @@ from print_functions import error_print, info_print, warning_print
 def serialization_data(data, limit, verbose, source):
     list_items = list()
 
-    soup = BeautifulSoup(data, 'xml')
+    soup = BeautifulSoup(data, "xml")
     if not checking_the_source_is_the_rss(soup, verbose, source):
         return None
 
-    items = soup.find_all('item')
+    channel = get_title_of_source(soup)
+    list_items.append(channel)
+
+    items = soup.find_all("item")
     count_news = len(items)
     limit = check_limit(limit, count_news)
 
@@ -27,12 +30,22 @@ def serialization_data(data, limit, verbose, source):
     return list_items
 
 
+def get_title_of_source(soup):
+    try:
+        channel_title = soup.find("title").get_text(strip=True)
+    except AttributeError:
+        channel_title = None
+
+    channel = {"channel_title": channel_title}
+    return channel
+
+
 def percent_generator(list_items, limit):
     percent_of_one_items = 100 / limit
     percent_of_complete_program = percent_of_one_items
     while True:
         info_print(
-            f"Feeds received [{len(list_items)}/{limit}], "
+            f"Feeds received [{len(list_items) - 1}/{limit}], "
             f"percent of execution program={int(percent_of_complete_program)}%"
         )
         yield
@@ -131,16 +144,16 @@ def serialization_item(item):
 
     item_dict = {
         "title": title,
+        "date": pub_date,
         "link": link,
         "author": author,
-        "description": description,
-        "content_encoded": content_encoded,
         "category": list_categories,
+        "description": description,
+        "more_description": content_encoded,
         "comments": comments,
-        "enclosure": enclosure,
-        "guid": guid,
-        "pub_date": pub_date,
-        "source": list_source,
+        "media_object": enclosure,
+        "extra_links": guid,
+        "source_feed": list_source,
     }
 
     return item_dict
