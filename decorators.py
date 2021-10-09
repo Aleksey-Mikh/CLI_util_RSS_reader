@@ -1,3 +1,5 @@
+from requests import exceptions
+
 from print_functions import info_print, warning_print, error_print
 
 
@@ -49,6 +51,10 @@ def intercept_errors(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
+        except exceptions.ConnectionError:
+            error_print("Connection error. Please check your URL")
+        except exceptions.MissingSchema as exc:
+            error_print(exc)
         except Exception as exc:
             error_print(exc)
             return None

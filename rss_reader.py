@@ -1,14 +1,13 @@
-import requests
-import json
 import argparse
 
-from serializers import serialization_data
-from print_functions import info_print, warning_print, error_print
+import requests
+
 from data_output import console_output_feed, console_json_output
 from decorators import (
     check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
 )
-
+from print_functions import info_print, error_print
+from serializers import serialization_data
 
 PROGRAM_VERSION = 1.0
 URL = [
@@ -29,6 +28,10 @@ HEADERS = {
 
 
 class RSSParser:
+    """
+    Class that regulates the parsing relationship between
+    the user and the site that program are trying to parse.
+    """
 
     def __init__(self):
         argparse_params = self._init_argparse()
@@ -41,6 +44,12 @@ class RSSParser:
     @staticmethod
     @check_limit_type_value
     def _init_argparse():
+        """
+        Initialization argparse and check if --version option
+        is specified app should just print its version and stop.
+
+        :return: args of argparse
+        """
         parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
         parser.add_argument("source", type=str, help="Print version info")
         parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
@@ -58,26 +67,41 @@ class RSSParser:
 
     @verbose_information_about_start_scrapping
     def parsing(self):
+        """
+        Gets the response object and checks that it isvalid
+        and call serialization_data to get serializable_data
+        """
         response = self._get_html()
 
+        if self._isvalid(response):
+            serializable_data = serialization_data(response.text, self.limit, self.verbose, self.source)
+
+            if serializable_data is None:
+                error_print("Data wasn't received")
+                return False
+
+            info_print("Receiving the news was successful")
+            self.serializable_data = serializable_data
+
+    def _isvalid(self, response):
+        """Check if response is valid"""
         if response is None:
             if self.verbose:
                 info_print(f"Program stop running with error, when it try to get information from {self.source!r}")
             return False
 
-        if response.status_code == 200:
-            self.serializable_data = serialization_data(response.text, self.limit, self.verbose, self.source)
-
-            if self.serializable_data is None:
-                return False
-            info_print("Receiving the news was successful")
-
-            self._save_data(self.serializable_data)
-
+        elif response.status_code == 200:
+            return True
         else:
             self._check_error_status_code(response.status_code)
 
     def print_data_in_console(self):
+        """
+        Check the self.json value and
+        if self.json is True - outputs json to the console
+        if self.json is False - outputs news
+        in a standard format to the console
+        """
         if self.serializable_data is None:
             return False
 
@@ -88,6 +112,10 @@ class RSSParser:
 
     @intercept_errors
     def _get_html(self):
+        """
+        Executes a get request at the url specified by the user
+        and check encoding of response data
+        """
         response = requests.get(self.source, headers=HEADERS)
 
         # if site gives invalid encoding this line trying to correct it
@@ -95,9 +123,13 @@ class RSSParser:
         return response
 
     def _check_error_status_code(self, status_code):
+        """
+        Check status code and print error message
+        :param status_code: http status code
+        """
         if 400 <= status_code <= 499:
             if status_code == 404:
-                error_print(f"{self.source!r} Not Found")
+                error_print(f"{self.source!r}: 404 Page Not Found")
             else:
                 error_print("Error seems to have been caused by the client. Check url which you give.")
         elif 500 <= status_code <= 599:
@@ -105,15 +137,11 @@ class RSSParser:
         else:
             error_print("Error which can't be processed because status code don't defined")
 
-    @staticmethod
-    def _save_data(serializable_data):
-        with open("data.json", "w", encoding="utf-8") as file:
-            json.dump(serializable_data, file, indent=4, ensure_ascii=False)
-
 
 @start_decorator
 @intercept_errors
 def main(reader):
+    """Load parsing and print data"""
     reader.parsing()
     reader.print_data_in_console()
 
