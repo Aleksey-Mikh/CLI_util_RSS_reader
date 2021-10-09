@@ -2,6 +2,9 @@ from print_functions import info_print, warning_print, error_print
 
 
 def check_limit_type_value(func):
+    """
+    Decorator which check type of limit value.
+    """
 
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
@@ -16,6 +19,9 @@ def check_limit_type_value(func):
 
 
 def start_decorator(func):
+    """
+    Decorator which print information about start and end program
+    """
 
     def wrapper(*args, **kwargs):
         number_of_separators = 20
@@ -38,6 +44,7 @@ def start_decorator(func):
 
 
 def intercept_errors(func):
+    """Decorator which intercept a errors"""
 
     def wrapper(*args, **kwargs):
         try:
@@ -50,6 +57,9 @@ def intercept_errors(func):
 
 
 def verbose_information_about_start_scrapping(func):
+    """
+    Decorator which print information about start and end scrapping
+    """
 
     def wrapper(*args, **kwargs):
         if args[0].verbose:
@@ -65,6 +75,7 @@ def verbose_information_about_start_scrapping(func):
 
 
 def delimiter_new_news(func):
+    """Decorator which print delimiter of new news"""
 
     def wrapper(feed):
         print("\n")  # line break
