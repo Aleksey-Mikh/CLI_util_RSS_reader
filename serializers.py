@@ -142,6 +142,10 @@ def serialization_item(item):
     except AttributeError:
         list_source = None
 
+    # if description text in rss equals content_encoded text - getting rid of duplicates
+    if description == content_encoded:
+        content_encoded = None
+
     item_dict = {
         "title": title,
         "date": pub_date,

@@ -10,7 +10,7 @@ from decorators import (
 )
 
 
-PROGRAM_VERSION = 0.6
+PROGRAM_VERSION = 1.0
 URL = [
     "https://people.onliner.by/feed",
     "https://www.thecipherbrief.com/feed",
