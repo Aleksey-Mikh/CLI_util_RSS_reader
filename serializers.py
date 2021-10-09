@@ -1,13 +1,24 @@
 from bs4 import BeautifulSoup
 
-from print_functions import error_print, info_print, warning_print
+from print_functions import info_print, warning_print
 
 
 def serialization_data(data, limit, verbose, source):
+    """
+    Function that processes the data with the soup class,
+    gets the channel name and dictionaries with the news content
+    and forms a list of it all.
+
+    :param data: response text
+    :param limit: limit of the news
+    :param verbose: flag which means that program must print log information
+    :param source: link that is used in parse print
+    :return: list of the dicts which contains information about news
+    """
     list_items = list()
 
     soup = BeautifulSoup(data, "xml")
-    if not checking_the_source_is_the_rss(soup, verbose, source):
+    if not checking_the_source_is_the_rss(soup, verbose, source):  # finish work if get False
         return None
 
     channel = get_title_of_source(soup)
@@ -31,6 +42,12 @@ def serialization_data(data, limit, verbose, source):
 
 
 def get_title_of_source(soup):
+    """
+    Find channel title and return it or None.
+
+    :param soup: BeautifulSoup object
+    :return: dict which contain channel_title
+    """
     try:
         channel_title = soup.find("title").get_text(strip=True)
     except AttributeError:
@@ -41,6 +58,12 @@ def get_title_of_source(soup):
 
 
 def percent_generator(list_items, limit):
+    """
+    Generator that prints information about the percent of program execution.
+
+    :param list_items: list of dictionaries with received news
+    :param limit: limit of the news
+    """
     percent_of_one_items = 100 / limit
     percent_of_complete_program = percent_of_one_items
     while True:
@@ -53,6 +76,14 @@ def percent_generator(list_items, limit):
 
 
 def checking_the_source_is_the_rss(soup, verbose, source):
+    """
+    Find element version in xml tree and print warning if source isn't RSS.
+
+    :param soup: BeautifulSoup object
+    :param verbose: flag which means that program must print log information
+    :param source: link that is used in parse print
+    :return: True if source is RSS or False if source isn't RSS
+    """
     try:
         soup.find("rss").get("version")
         return True
@@ -65,12 +96,27 @@ def checking_the_source_is_the_rss(soup, verbose, source):
 
 
 def check_limit(limit, count_news):
+    """
+    Checked limit and if limit is None or limit > count_news
+    redefined limit to count_news.
+
+    :param limit: limit of the news
+    :param count_news: the number of news on the site
+    :return: updated limit
+    """
     if limit is None or limit > count_news:
         limit = count_news
     return limit
 
 
 def serialization_item(item):
+    """
+    Function that processes the news and gets the values of an element
+    to build a dictionary that will contain information about the news.
+
+    :param item: one news
+    :return: dict which contain information about news
+    """
     try:
         title = item.find("title").get_text(strip=True)
     except AttributeError:
@@ -103,9 +149,11 @@ def serialization_item(item):
     try:
         list_categories = []
         categories = item.find_all("category")
+
         for category in categories:
             category_content = category.get_text(strip=True)
             list_categories.append(category_content)
+
     except AttributeError:
         list_categories = None
 
