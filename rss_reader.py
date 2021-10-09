@@ -4,7 +4,7 @@ import argparse
 
 from serializers import serialization_data
 from print_functions import info_print, warning_print, error_print
-from data_output import console_output_feeds, console_json_output
+from data_output import console_output_feed, console_json_output
 from decorators import (
     check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
 )
@@ -84,7 +84,7 @@ class RSSParser:
         if self.json:
             console_json_output(self.serializable_data)
         else:
-            console_output_feeds(self.serializable_data)
+            console_output_feed(self.serializable_data)
 
     @intercept_errors
     def _get_html(self):

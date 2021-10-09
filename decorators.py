@@ -64,12 +64,13 @@ def verbose_information_about_start_scrapping(func):
     return wrapper
 
 
-def delimiter_new_feed(func):
+def delimiter_new_news(func):
 
     def wrapper(feed):
         print("\n")  # line break
+        print("---" * 30)
         result = func(feed)
-        print()  # line break
+        print("---" * 30, end='')
         return result
 
     return wrapper
