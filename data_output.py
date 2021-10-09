@@ -1,3 +1,5 @@
+import json
+
 from decorators import delimiter_new_feed
 
 
@@ -32,10 +34,12 @@ def line_break(i):
 
 
 def rebuild_value(value):
-    temp_str = ''
-
-    for val in value:
-        temp_str += val
-    value = temp_str
-
+    value = ", ".join(value)
     return value
+
+
+def console_json_output(data):
+    json_dump = json.dumps(data)
+    json_obj = json.loads(json_dump)
+    json_formatted_text = json.dumps(json_obj, indent=4, ensure_ascii=False)
+    print(json_formatted_text)

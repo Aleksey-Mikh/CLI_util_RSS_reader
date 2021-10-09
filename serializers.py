@@ -18,7 +18,7 @@ def serialization_data(data, limit, verbose, source):
     limit = check_limit(limit, count_news)
 
     if verbose:
-        info_print(f"Count of feeds {count_news}")
+        info_print(f"Count of feeds: {limit}")
     gen = percent_generator(list_items, limit)
 
     for item in items[:limit]:

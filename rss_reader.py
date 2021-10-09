@@ -4,7 +4,7 @@ import argparse
 
 from serializers import serialization_data
 from print_functions import info_print, warning_print, error_print
-from data_output import console_output_feeds
+from data_output import console_output_feeds, console_json_output
 from decorators import (
     check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
 )
@@ -82,7 +82,7 @@ class RSSParser:
             return False
 
         if self.json:
-            pass
+            console_json_output(self.serializable_data)
         else:
             console_output_feeds(self.serializable_data)
 
@@ -112,11 +112,12 @@ class RSSParser:
 
 
 @start_decorator
-def main():
-    reader = RSSParser()
+@intercept_errors
+def main(reader):
     reader.parsing()
     reader.print_data_in_console()
 
 
 if __name__ == '__main__':
-    main()
+    reader = RSSParser()
+    main(reader)
