@@ -10,15 +10,7 @@ from print_functions import info_print, error_print
 from serializers import serialization_data
 
 PROGRAM_VERSION = 1.0
-URL = [
-    "https://people.onliner.by/feed",
-    "https://www.thecipherbrief.com/feed",
-    'https://news.yahoo.com/rss/',
-    'https://rss.art19.com/apology-line',
-    'https://news.un.org/feed/subscribe/ru/news/region/europe/feed/rss.xml',
-    'http://avangard-93.ru/news/rss',
-    'http://www.forbes.com/most-popular/feed/',
-]
+
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
