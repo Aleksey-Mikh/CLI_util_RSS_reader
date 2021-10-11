@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: rss-reader
+Version: 1.5.0
+Summary: A small example package
+Home-page: https://github.com/Aleksey-Mikh/Homework/tree/final_task
+Author: Aleksey Mikhalkevich
+Author-email: lehado67@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+
+Project description
+

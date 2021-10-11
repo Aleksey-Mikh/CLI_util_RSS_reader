@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from print_functions import info_print, warning_print
+from cool_project.cervices.print_functions import info_print, warning_print
 
 
 def serialization_data(data, limit, verbose, source):

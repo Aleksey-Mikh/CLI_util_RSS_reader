@@ -1,6 +1,6 @@
 from requests import exceptions
 
-from print_functions import info_print, warning_print, error_print
+from cool_project.cervices.print_functions import info_print, warning_print, error_print
 
 
 def check_limit_type_value(func):

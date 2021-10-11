@@ -2,14 +2,14 @@ import argparse
 
 import requests
 
-from data_output import console_output_feed, console_json_output
-from decorators import (
+from cool_project.cervices.data_output import console_output_feed, console_json_output
+from cool_project.cervices.decorators import (
     check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
 )
-from print_functions import info_print, error_print
-from serializers import serialization_data
+from cool_project.cervices.print_functions import info_print, error_print
+from cool_project.serializers.serializers import serialization_data
 
-PROGRAM_VERSION = 1.0
+PROGRAM_VERSION = 1.5
 
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -132,12 +132,17 @@ class RSSParser:
 
 @start_decorator
 @intercept_errors
-def main(reader):
+def start_parsing(reader):
     """Load parsing and print data"""
     reader.parsing()
     reader.print_data_in_console()
 
 
-if __name__ == '__main__':
+def main():
+    """Init reader"""
     reader = RSSParser()
-    main(reader)
+    start_parsing(reader)
+
+
+if __name__ == '__main__':
+    main()

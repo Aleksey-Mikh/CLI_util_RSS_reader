@@ -1,6 +1,6 @@
 import json
 
-from decorators import delimiter_new_news
+from cool_project.cervices.decorators import delimiter_new_news
 
 
 def console_output_feed(news):
@@ -67,7 +67,5 @@ def console_json_output(data):
     :param data: list of dicts which contains news information
     :return: list of dicts which contains news information
     """
-    json_dump = json.dumps(data)
-    json_obj = json.loads(json_dump)
-    json_formatted_text = json.dumps(json_obj, indent=4, ensure_ascii=False)
+    json_formatted_text = json.dumps(data, indent=4, ensure_ascii=False)
     print(json_formatted_text)
