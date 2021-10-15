@@ -1,6 +1,6 @@
 import json
 
-from cool_project.cervices.decorators import delimiter_new_news
+from cool_project.cervices.decorators import decorator_delimiter
 
 
 def console_output_feed(news):
@@ -14,10 +14,10 @@ def console_output_feed(news):
     print(f"Channel title: {channel_title['channel_title']}")
     for item in news[1:]:
         output_feed(item)
-    print()  # line break
+    # print()  # line break for correct output
 
 
-@delimiter_new_news
+@decorator_delimiter("News", calls_stat=True)
 def output_feed(news):
     """
     Function which processing dictionary and if value is None

@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+PROGRAM_VERSION = "1.7.0"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -7,10 +8,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='rss_reader',
-    version='1.5.0',
+    version=PROGRAM_VERSION,
     author='Aleksey Mikhalkevich',
     author_email='lehado67@gmail.com',
-    description="A small example package",
+    description="A small example package",  # TODO make description
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Aleksey-Mikh/Homework/tree/final_task",

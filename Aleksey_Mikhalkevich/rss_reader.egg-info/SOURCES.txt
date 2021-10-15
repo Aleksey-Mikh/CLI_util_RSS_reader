@@ -2,6 +2,7 @@ README.md
 pyproject.toml
 setup.py
 cool_project/__init__.py
+cool_project/project_settings.py
 cool_project/rss_reader.py
 cool_project/cervices/__init__.py
 cool_project/cervices/data_output.py

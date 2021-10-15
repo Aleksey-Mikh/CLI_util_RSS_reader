@@ -10,5 +10,5 @@ Platform: UNKNOWN
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 
-Project description
+Project description  # TODO сделать описание
 

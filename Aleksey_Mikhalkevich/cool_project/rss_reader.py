@@ -1,22 +1,17 @@
 import argparse
-
 import requests
+
 
 from cool_project.cervices.data_output import console_output_feed, console_json_output
 from cool_project.cervices.decorators import (
-    check_limit_type_value, start_decorator, intercept_errors, verbose_information_about_start_scrapping
+    check_limit_type_value,
+    intercept_errors,
+    verbose_information_about_start_scrapping,
+    decorator_delimiter,
 )
 from cool_project.cervices.print_functions import info_print, error_print
 from cool_project.serializers.serializers import serialization_data
-
-PROGRAM_VERSION = 1.5
-
-HEADERS = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                  "(KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
-    "accept": "*/*",
-    "Content-Type": "charset=UTF-8"
-}
+from cool_project.project_settings import PROGRAM_VERSION, HEADERS
 
 
 class RSSParser:
@@ -26,6 +21,9 @@ class RSSParser:
     """
 
     def __init__(self):
+        """
+        Init class and init argparse
+        """
         argparse_params = self._init_argparse()
         self.source = argparse_params.source
         self.limit = argparse_params.limit
@@ -106,7 +104,9 @@ class RSSParser:
     def _get_html(self):
         """
         Executes a get request at the url specified by the user
-        and check encoding of response data
+        and check encoding of response data.
+
+        :return response obj
         """
         response = requests.get(self.source, headers=HEADERS)
 
@@ -116,7 +116,8 @@ class RSSParser:
 
     def _check_error_status_code(self, status_code):
         """
-        Check status code and print error message
+        Check status code and print error message.
+
         :param status_code: http status code
         """
         if 400 <= status_code <= 499:
@@ -130,7 +131,7 @@ class RSSParser:
             error_print("Error which can't be processed because status code don't defined")
 
 
-@start_decorator
+@decorator_delimiter("Start Program", "Stop Program")
 @intercept_errors
 def start_parsing(reader):
     """Load parsing and print data"""
