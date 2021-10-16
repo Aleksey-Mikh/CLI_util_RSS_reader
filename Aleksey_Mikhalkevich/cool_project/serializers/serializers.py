@@ -21,7 +21,7 @@ def serialization_data(data, limit, verbose, source):
     if not checking_the_source_is_the_rss(soup, verbose, source):  # finish work if get False
         return None
 
-    channel = get_title_of_source(soup)
+    channel = get_channel_data(soup, source)
     list_items.append(channel)
 
     items = soup.find_all("item")
@@ -41,19 +41,24 @@ def serialization_data(data, limit, verbose, source):
     return list_items
 
 
-def get_title_of_source(soup):
+def get_channel_data(soup, source):
     """
     Find channel title and return it or None.
+    Write link to source in dict.
 
     :param soup: BeautifulSoup object
-    :return: dict which contain channel_title
+    :param source: source or the feed
+    :return: dict which contain channel_data
     """
     try:
         channel_title = soup.find("title").get_text(strip=True)
     except AttributeError:
         channel_title = None
 
-    channel = {"channel_title": channel_title}
+    channel = {
+        "channel_title": channel_title,
+        "source": source
+    }
     return channel
 
 

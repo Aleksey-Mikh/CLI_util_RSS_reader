@@ -10,8 +10,11 @@ def console_output_feed(news):
     :param news: list of dicts which contains news information
     """
     print('\n')  # line break for correct output
-    channel_title = news[0]
-    print(f"Channel title: {channel_title['channel_title']}", end="\n\n")
+
+    channel_data = news[0]
+    print(f"Channel source: {channel_data['source']}")
+    print(f"Channel title: {channel_data['channel_title']}", end="\n\n")
+
     for item in news[1:]:
         output_feed(item)
         print()  # line break for correct output

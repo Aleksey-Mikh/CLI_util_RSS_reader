@@ -10,7 +10,8 @@ JSON or simple print in console.
 
     [
         {
-            "channel_title": channel_title
+        "channel_title": channel_title,
+        "source": source,
         },
         {
             "title": title,
@@ -55,7 +56,10 @@ JSON or simple print in console.
 
 ###simple print:
 
-    --------------- News 1 ---------------
+    Channel source: https://people.onliner.by/feed
+    Channel title: Люди Onlíner
+
+    -------------------- News № --------------------
     title: title
     date: pub_date
     link: link
@@ -69,7 +73,7 @@ JSON or simple print in console.
     media_object: enclosure
     extra_links: guid
     source_feed: list_source
-    --------------------------------------
+    ------------------------------------------------
 
 ##print_functions.py
 The Module contains print functions for print different messages, for example:
