@@ -11,6 +11,7 @@ from cool_project.cervices.decorators import (
 )
 from cool_project.cervices.print_functions import info_print, error_print
 from cool_project.serializers.serializers import serialization_data
+from cool_project.data_storage.working_with_storage import storage_control
 from cool_project.project_settings import PROGRAM_VERSION, HEADERS
 
 
@@ -91,18 +92,19 @@ class RSSParser:
         """
         Check date and source value and allowed standard start if
         source was enter and date is None, if source is None
-        print error, if date was enter call StorageManager.
+        print error, if date was enter call storage_control.
 
         :return: True if source is enter and date is None
         """
         if self.date is None and self.source is not None:
             return True
+        elif self.date:
+            storage_control(self.date, self.source)
         elif self.source is None:
             if self.verbose:
                 info_print(f"Source is {self.source}")
-            error_print("A source wasn't enter")
-        else:
-            print(self.date)
+            if not error_print("A source wasn't enter"):
+                error_print("Some Error")  # TODO write correct error
 
     def print_data_in_console(self):
         """
