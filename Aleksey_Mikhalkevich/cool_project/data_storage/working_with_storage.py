@@ -17,6 +17,16 @@ def read_from_storage(path):
         return data
 
 
+def make_dir(path):
+    if Path(path).exists():
+        p = Path(path)
+        p.mkdir()
+
+
+def check_path(path):
+    return Path(path).exists()
+
+
 def get_path(data):
     source = data[0]["source"]
     pattern = r"\W"
