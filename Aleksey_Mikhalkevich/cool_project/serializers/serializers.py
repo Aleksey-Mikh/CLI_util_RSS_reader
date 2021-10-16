@@ -68,7 +68,7 @@ def percent_generator(list_items, limit):
     percent_of_complete_program = percent_of_one_items
     while True:
         info_print(
-            f"Feeds received [{len(list_items) - 1}/{limit}], "
+            f"News received [{len(list_items) - 1}/{limit}], "
             f"percent of execution program={int(percent_of_complete_program)}%"
         )
         yield
@@ -133,8 +133,8 @@ def serialization_item(item):
         author = None
 
     try:
-        description = item.find("description").get_text(strip=True)
-        soup = BeautifulSoup(description, 'html.parser')
+        description_data = item.find("description").get_text(strip=True)
+        soup = BeautifulSoup(description_data, 'html.parser')
         description = soup.get_text()
     except AttributeError:
         description = None
@@ -168,6 +168,19 @@ def serialization_item(item):
         enclosure = None
 
     try:
+        images_list = []
+
+        description_data = item.find("description").get_text(strip=True)
+        soup = BeautifulSoup(description_data, 'html.parser')
+        images = soup.find_all('img')
+
+        for img in images:
+            images_list.append(img.get("src"))
+
+    except AttributeError:
+        images_list = None
+
+    try:
         guid = item.find("guid").get_text(strip=True)
     except AttributeError:
         guid = None
@@ -178,21 +191,32 @@ def serialization_item(item):
         pub_date = None
 
     try:
-        list_source = []
         source_content = item.find("source").get_text(strip=True)
-
-        try:
-            source_url = item.find("source").get("url")
-        except AttributeError:
-            source_url = ""
-
-        list_source.extend([source_content + " ", source_url])
     except AttributeError:
-        list_source = None
+        source_content = None
+
+    try:
+        source_url = item.find("source").get("url")
+    except AttributeError:
+        source_url = ""
 
     # if description text in rss equals content_encoded text - getting rid of duplicates
     if description == content_encoded:
         content_encoded = None
+
+    # check media objects
+    if images_list and enclosure:
+        enclosure = images_list.append(enclosure)
+    elif images_list:
+        enclosure = images_list
+
+    # check source
+    if source_url and source_content:
+        list_source = [source_content, source_url]
+    elif source_url:
+        list_source = source_url
+    else:
+        list_source = source_content
 
     item_dict = {
         "title": title,
