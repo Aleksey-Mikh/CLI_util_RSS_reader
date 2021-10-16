@@ -29,6 +29,7 @@ class RSSParser:
         self.limit = argparse_params.limit
         self.json = argparse_params.json
         self.verbose = argparse_params.verbose
+        self.date = argparse_params.date
         self.serializable_data = None
 
     @staticmethod
@@ -41,11 +42,12 @@ class RSSParser:
         :return: args of argparse
         """
         parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
-        parser.add_argument("source", type=str, help="Print version info")
+        parser.add_argument("source", nargs="?", default=None, type=str, help="Print version info")
         parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
         parser.add_argument("--json", action='store_true', help="Print result as JSON in stdout")
         parser.add_argument("--verbose", action='store_true', help="Outputs verbose status messages")
         parser.add_argument("--limit", help="Limit news topics if this parameter provided")
+        parser.add_argument("--date", help="Take a date in %Y%m%d format. Example: 20191206")
 
         args, unknown = parser.parse_known_args()
 
@@ -77,13 +79,30 @@ class RSSParser:
         """Check if response is valid"""
         if response is None:
             if self.verbose:
-                info_print(f"Program stop running with error, when it try to get information from {self.source!r}")
+                info_print(f"The program stop running with error, when it try to get information from {self.source!r}")
             return False
 
         elif response.status_code == 200:
             return True
         else:
             self._check_error_status_code(response.status_code)
+
+    def check_date_and_source(self):
+        """
+        Check date and source value and allowed standard start if
+        source was enter and date is None, if source is None
+        print error, if date was enter call StorageManager.
+
+        :return: True if source is enter and date is None
+        """
+        if self.date is None and self.source is not None:
+            return True
+        elif self.source is None:
+            if self.verbose:
+                info_print(f"Source is {self.source}")
+            error_print("A source wasn't enter")
+        else:
+            print(self.date)
 
     def print_data_in_console(self):
         """
@@ -96,8 +115,12 @@ class RSSParser:
             return False
 
         if self.json:
+            if self.verbose:
+                info_print("Output news in JSON format")
             console_json_output(self.serializable_data)
         else:
+            if self.verbose:
+                info_print("Output news in standard format")
             console_output_feed(self.serializable_data)
 
     @intercept_errors
@@ -135,8 +158,9 @@ class RSSParser:
 @intercept_errors
 def start_parsing(reader):
     """Load parsing and print data"""
-    reader.parsing()
-    reader.print_data_in_console()
+    if reader.check_date_and_source():
+        reader.parsing()
+        reader.print_data_in_console()
 
 
 def main():
