@@ -230,7 +230,7 @@ def serialization_item(item):
         "author": author,
         "category": list_categories,
         "description": description,
-        # "more_description": content_encoded,
+        # "more_description": content_encoded,  # TODO don't forget to del #
         "comments": comments,
         "media_object": enclosure,
         "extra_links": guid,

@@ -34,17 +34,10 @@ class StorageManager:
     def check_path(path):
         return Path(path).exists()
 
-    def get_file_name(self):
-        if self.data is None:
-            date_in_correct_format = self.get_date_in_correct_format(self.date)
-        else:
-            date_in_correct_format = self.get_date_in_correct_format(self.data[1]["date"])
-
-        if date_in_correct_format is None:
-            return None
-
+    def get_file_name(self, date):
+        """case when program after parsing"""
         source = re.sub(r"\W", "_", self.source)
-        file_name = f'{date_in_correct_format}_{source}.json'
+        file_name = f'{date}_{source}.json'
 
         return file_name
 
@@ -84,10 +77,15 @@ class StorageManager:
 
         return channel_data, dict_for_data_saving
 
+    @staticmethod
+    def _get_abspath():
+        abs_file_path = os.path.abspath(__file__)
+        path, name = os.path.split(abs_file_path)
+        return path
+
     def make_dir_by_key(self, data_dict):
         for key in data_dict.keys():
-            abs_file_path = os.path.abspath(__file__)
-            path, name = os.path.split(abs_file_path)
+            path = self._get_abspath()
 
             # key[:7] it is the year and the month in the format: 2021-10
             path = self.get_path(path, "storage", key[:7])
@@ -95,6 +93,17 @@ class StorageManager:
 
             path = self.get_path(path, key)
             self.make_dir(path)
+
+    def control_of_exist(self, data_dict):
+        for date, news in data_dict.items():
+            file_name = self.get_file_name(date)
+            print(file_name)
+            path = self._get_abspath()
+            path = self.get_path(path, "storage", date[:7], date, file_name)
+            if self.check_path(path):
+                print("Yes")
+            else:
+                print("No")
 
 
 def storage_control(*, date=None, source=None, data=None):
@@ -107,6 +116,7 @@ def storage_control(*, date=None, source=None, data=None):
 
         channel_data, dict_for_data_saving = response_from_split_data_by_news
         st_manager.make_dir_by_key(dict_for_data_saving)
+        st_manager.control_of_exist(dict_for_data_saving)
 
 
 
