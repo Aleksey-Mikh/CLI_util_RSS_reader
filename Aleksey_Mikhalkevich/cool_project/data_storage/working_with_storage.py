@@ -4,6 +4,8 @@ import re
 from pathlib import Path
 import datetime
 
+from cool_project.cervices.print_functions import error_print, warning_print, info_print
+
 
 class StorageManager:
 
@@ -27,7 +29,6 @@ class StorageManager:
         if not Path(path).exists():
             p = Path(path)
             p.mkdir()
-            print('lol')
 
     @staticmethod
     def check_path(path):
@@ -35,9 +36,9 @@ class StorageManager:
 
     def get_file_name(self):
         if self.data is None:
-            date_in_correct_format = self._get_date_in_correct_format(self.date)
+            date_in_correct_format = self.get_date_in_correct_format(self.date)
         else:
-            date_in_correct_format = self._get_date_in_correct_format(self.data[1]["date"])
+            date_in_correct_format = self.get_date_in_correct_format(self.data[1]["date"])
 
         if date_in_correct_format is None:
             return None
@@ -52,7 +53,7 @@ class StorageManager:
         return Path(old_path, *args)
 
     @staticmethod
-    def _get_date_in_correct_format(date_str):
+    def get_date_in_correct_format(date_str):
         list_of_date_formats = [
             "%a, %d %b %Y %H:%M:%S %z",
             "%Y%m%d"
@@ -60,7 +61,7 @@ class StorageManager:
         for date_format in list_of_date_formats:
             try:
                 date_time_obj = datetime.datetime.strptime(date_str, date_format)
-                return date_time_obj.date()
+                return str(date_time_obj.date())
             except ValueError:
                 # if the correct format wasn't received,
                 # proceed to the next format in list_of_date_formats
@@ -68,17 +69,64 @@ class StorageManager:
 
         return None
 
+    def split_data_by_news(self):
+        dict_for_data_saving = {}
+        channel_data, data = self.data[:1], self.data[1:]
+
+        for news in data:
+            date_in_correct_format = self.get_date_in_correct_format(news["date"])
+
+            if date_in_correct_format is None:
+                error_print(f"The site {self.source} uses an unsupported date format. Storage data has failed.")
+                return None
+
+            dict_for_data_saving[date_in_correct_format] = dict_for_data_saving.get(date_in_correct_format, []) + [news]
+
+        return channel_data, dict_for_data_saving
+
+    def make_dir_by_key(self, data_dict):
+        for key in data_dict.keys():
+            abs_file_path = os.path.abspath(__file__)
+            path, name = os.path.split(abs_file_path)
+
+            # key[:7] it is the year and the month in the format: 2021-10
+            path = self.get_path(path, "storage", key[:7])
+            self.make_dir(path)
+
+            path = self.get_path(path, key)
+            self.make_dir(path)
+
 
 def storage_control(*, date=None, source=None, data=None):
     if data is not None and source is not None:  # after parsing, writing data to the storage
         st_manager = StorageManager(source, data=data)
-        file_name = st_manager.get_file_name()
+        response_from_split_data_by_news = st_manager.split_data_by_news()
 
-        abs_file_path = os.path.abspath(__file__)
-        path, name = os.path.split(abs_file_path)
+        if response_from_split_data_by_news is None:
+            return False
 
-        path = st_manager.get_path(path, "storage", file_name[:7])
-        st_manager.make_dir(path)
+        channel_data, dict_for_data_saving = response_from_split_data_by_news
+        st_manager.make_dir_by_key(dict_for_data_saving)
 
-        path = st_manager.get_path(path, file_name)
-        st_manager.write_to_storage(path)
+
+
+    #     st_manager = StorageManager(source, data=data)
+    #     file_name = st_manager.get_file_name()
+    #
+    #     abs_file_path = os.path.abspath(__file__)
+    #     path, name = os.path.split(abs_file_path)
+    #
+    #     path = st_manager.get_path(path, "storage", file_name[:7])
+    #     st_manager.make_dir(path)
+    #
+    #     path = st_manager.get_path(path, file_name)
+    #     st_manager.write_to_storage(path)
+    # elif date is not None and source is None:
+    #     st_manager = StorageManager(date=date)
+    #     file_name = st_manager.get_file_name()
+    #
+    #     abs_file_path = os.path.abspath(__file__)
+    #     path, name = os.path.split(abs_file_path)
+    #
+    #     path = st_manager.get_path(path, "storage", file_name[:7])
+
