@@ -50,7 +50,8 @@ class StorageManager:
     def get_date_in_correct_format(date_str):
         list_of_date_formats = [
             "%a, %d %b %Y %H:%M:%S %z",
-            "%Y%m%d"
+            "%Y%m%d",
+            "%Y-%m-%dT%H:%M:%SZ",
         ]
         for date_format in list_of_date_formats:
             try:
@@ -98,23 +99,30 @@ class StorageManager:
     def control_of_exist(self, data_dict, channel_data):
         for date, list_of_news in data_dict.items():
             file_name = self.get_file_name(date)
-            print(file_name)
             path = self._get_abspath()
             path = self.get_path(path, "storage", date[:7], date, file_name)
+
             if self.check_path(path):
-                data_from_file = self.read_from_storage(path)
-                data_to_file = []
-
-                for news in list_of_news:
-                    if news not in data_from_file:
-                        data_to_file.append(news)
-                        print("file was updated")
-
-                data_from_file += data_to_file
-                self.write_to_storage(path, data_from_file)
+                self._write_or_update_data(path, channel_data, list_of_news, "update")
             else:
-                data_to_file = channel_data + list_of_news
-                self.write_to_storage(path, data_to_file)
+                self._write_or_update_data(path, channel_data, list_of_news, "write")
+
+    def _write_or_update_data(self, path, channel_data, list_of_news, flag):
+        if flag == "update":
+            data_from_file = self.read_from_storage(path)
+            data_to_file = []
+
+            for news in list_of_news:
+                if news not in data_from_file:
+                    data_to_file.append(news)
+                    print("file was updated")
+
+            # data_from_file[:1] - channel data
+            data_to_file = data_from_file[:1] + data_to_file + data_from_file[1:]
+            self.write_to_storage(path, data_to_file)
+        elif flag == "write":
+            data_to_file = channel_data + list_of_news
+            self.write_to_storage(path, data_to_file)
 
 
 def storage_control(*, date=None, source=None, data=None):
