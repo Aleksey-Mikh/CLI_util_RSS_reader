@@ -98,8 +98,8 @@ class RSSParser:
         """
         if self.date is None and self.source is not None:
             return True
-        elif self.date:
-            storage_control(self.date, self.source)
+        elif self.date is not None:
+            storage_control(date=self.date, source=self.source)
         elif self.source is None:
             if self.verbose:
                 info_print(f"Source is {self.source}")
@@ -124,6 +124,8 @@ class RSSParser:
             if self.verbose:
                 info_print("Output news in standard format")
             console_output_feed(self.serializable_data)
+
+        storage_control(data=self.serializable_data, source=self.source)
 
     @intercept_errors
     def _get_html(self):
@@ -157,7 +159,7 @@ class RSSParser:
 
 
 @decorator_delimiter("Start Program", "Stop Program")
-@intercept_errors
+# @intercept_errors
 def start_parsing(reader):
     """Load parsing and print data"""
     if reader.check_date_and_source():
