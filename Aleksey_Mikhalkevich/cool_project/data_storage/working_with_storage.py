@@ -14,9 +14,10 @@ class StorageManager:
         self.source = source
         self.data = data
 
-    def write_to_storage(self, path):
+    @staticmethod
+    def write_to_storage(path, data):
         with open(path, "w", encoding='utf-8') as file:
-            json.dump(self.data, file, indent=4, ensure_ascii=False)
+            json.dump(data, file, indent=4, ensure_ascii=False)
 
     @staticmethod
     def read_from_storage(path):
@@ -94,16 +95,26 @@ class StorageManager:
             path = self.get_path(path, key)
             self.make_dir(path)
 
-    def control_of_exist(self, data_dict):
-        for date, news in data_dict.items():
+    def control_of_exist(self, data_dict, channel_data):
+        for date, list_of_news in data_dict.items():
             file_name = self.get_file_name(date)
             print(file_name)
             path = self._get_abspath()
             path = self.get_path(path, "storage", date[:7], date, file_name)
             if self.check_path(path):
-                print("Yes")
+                data_from_file = self.read_from_storage(path)
+                data_to_file = []
+
+                for news in list_of_news:
+                    if news not in data_from_file:
+                        data_to_file.append(news)
+                        print("file was updated")
+
+                data_from_file += data_to_file
+                self.write_to_storage(path, data_from_file)
             else:
-                print("No")
+                data_to_file = channel_data + list_of_news
+                self.write_to_storage(path, data_to_file)
 
 
 def storage_control(*, date=None, source=None, data=None):
@@ -116,7 +127,7 @@ def storage_control(*, date=None, source=None, data=None):
 
         channel_data, dict_for_data_saving = response_from_split_data_by_news
         st_manager.make_dir_by_key(dict_for_data_saving)
-        st_manager.control_of_exist(dict_for_data_saving)
+        st_manager.control_of_exist(dict_for_data_saving, channel_data)
 
 
 

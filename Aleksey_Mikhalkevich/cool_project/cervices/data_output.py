@@ -12,8 +12,8 @@ def console_output_feed(news):
     print('\n')  # line break for correct output
 
     channel_data = news[0]
-    print(f"Channel source: {channel_data['source']}")
-    print(f"Channel title: {channel_data['channel_title']}", end="\n\n")
+    print(f"Feed source: {channel_data['source']}")
+    print(f"Feed: {channel_data['channel_title']}", end="\n\n")
 
     for item in news[1:]:
         output_feed(item)
