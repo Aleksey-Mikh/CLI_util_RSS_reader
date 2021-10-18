@@ -99,12 +99,11 @@ class RSSParser:
         if self.date is None and self.source is not None:
             return True
         elif self.date is not None:
-            storage_control(date=self.date, source=self.source, verbose=self.verbose)
+            storage_control(date=self.date, source=self.source, verbose=self.verbose, json=self.json, limit=self.limit)
         elif self.source is None:
             if self.verbose:
                 info_print(f"Source is {self.source}")
-            if not error_print("A source wasn't enter"):
-                error_print("Some Error")  # TODO write correct error
+            error_print("A source wasn't enter")
 
     def print_data_in_console(self):
         """

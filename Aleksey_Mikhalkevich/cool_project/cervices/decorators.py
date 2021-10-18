@@ -33,7 +33,7 @@ def intercept_errors(func):
         except exceptions.MissingSchema as exc:
             error_print(exc)
         except Exception as exc:
-            error_print(exc)
+            error_print("Unknown error")
             return None
 
     return wrapper

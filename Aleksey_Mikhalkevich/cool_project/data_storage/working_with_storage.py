@@ -22,12 +22,11 @@ class StorageManager:
         self.data = data
         self.verbose = verbose
 
-    def get_file_name(self, date):
-        """case when program after parsing"""
-        source = re.sub(r"\W", "_", self.source)
-        file_name = f'{date}_{source}.json'
-
-        return file_name
+    def _get_abspath_to_storage(self):
+        abs_file_path = os.path.abspath(__file__)
+        path, name = os.path.split(abs_file_path)
+        path = self.get_path(path, "storage")
+        return path
 
     @staticmethod
     def write_to_storage(path, data):
@@ -47,7 +46,7 @@ class StorageManager:
             p.mkdir()
 
     @staticmethod
-    def check_path(path):
+    def path_is_exists(path):
         return Path(path).exists()
 
     @staticmethod
@@ -67,17 +66,18 @@ class StorageManager:
 
         return None
 
-    def _get_abspath_to_storage(self):
-        abs_file_path = os.path.abspath(__file__)
-        path, name = os.path.split(abs_file_path)
-        path = self.get_path(path, "storage")
-        return path
-
 
 class DataManagerInStorageAfterParsing(StorageManager):
 
     def __init__(self, source, *, data, verbose):
         super().__init__(source, data=data, verbose=verbose)
+
+    def get_file_name(self, date):
+        """case when program after parsing"""
+        source = re.sub(r"\W", "_", self.source)
+        file_name = f'{date}_{source}.json'
+
+        return file_name
 
     def make_dir_by_key(self, data_dict):
         for key in data_dict.keys():
@@ -96,7 +96,7 @@ class DataManagerInStorageAfterParsing(StorageManager):
             path = self._get_abspath_to_storage()
             path = self.get_path(path, date[:7], date, file_name)
 
-            if self.check_path(path):
+            if self.path_is_exists(path):
                 self._write_or_update_data(path, channel_data, list_of_news, "update")
             else:
                 self._write_or_update_data(path, channel_data, list_of_news, "write")
@@ -136,7 +136,52 @@ class DataManagerInStorageAfterParsing(StorageManager):
         return channel_data, dict_for_data_saving
 
 
-def storage_control(*, date=None, source=None, data=None, verbose=None):
+class FindManagerWhenEnterDate(StorageManager):
+
+    def __init__(self, source, *, date, verbose, json_flag, limit):
+        self.json_flag = json_flag
+        self.limit = limit
+        super().__init__(source, date=date, verbose=verbose)
+
+    @staticmethod
+    def _news_was_not_founded(date):
+        error_print(f"No news was found for this date - {date}")
+
+    def get_content_by_paths(self, paths):
+        list_of_content = []
+        for path in paths:
+            data_from_file = self.read_from_storage(path)
+            list_of_content.append(data_from_file)
+
+        return list_of_content
+
+    def check_news_by_date(self):
+        date_in_correct_format = self.get_date_in_correct_format(self.date)
+
+        if date_in_correct_format is None:
+            error_print(f"{self.date!r} is incorrect date. Please try to enter the date in correct format")
+            return False
+
+        path = self.get_path(self._get_abspath_to_storage(), date_in_correct_format[:7])
+
+        if self.path_is_exists(path):
+            path = self.get_path(path, date_in_correct_format)
+
+            if self.path_is_exists(path):
+                paths = Path(path).glob(f"{date_in_correct_format}*")
+                paths = list(map(str, paths))
+                return paths
+            else:
+                self._news_was_not_founded(date_in_correct_format)
+                return False
+        else:
+            self._news_was_not_founded(date_in_correct_format)
+            return False
+
+
+
+
+def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs):
     if data is not None and source is not None:  # after parsing, writing data to the storage
         st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose)
         response_from_split_data_by_news = st_manager.split_data_by_news()
@@ -147,6 +192,19 @@ def storage_control(*, date=None, source=None, data=None, verbose=None):
         channel_data, dict_for_data_saving = response_from_split_data_by_news
         st_manager.make_dir_by_key(dict_for_data_saving)
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
+    elif date is not None and source is None:
+        json_flag, limit = kwargs["json"], kwargs["limit"]
+        st_manager = FindManagerWhenEnterDate(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
+        paths = st_manager.check_news_by_date()
+
+        if not paths:
+            return False
+
+        list_of_content = st_manager.get_content_by_paths(paths)
+
+
+
+
 
 
 
