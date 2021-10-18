@@ -5,6 +5,7 @@ from pathlib import Path
 import datetime
 
 from cool_project.cervices.print_functions import error_print, warning_print, info_print
+from cool_project.cervices.data_output import console_output_feed, console_json_output
 
 
 LIST_OF_DATE_FORMATS = [
@@ -155,11 +156,49 @@ class FindManagerWhenEnterDate(StorageManager):
 
         return list_of_content
 
+    def slice_content_by_limit(self, list_of_content):
+        if self.limit is None:
+            return list_of_content
+
+        limit = self.limit
+        new_list_of_content = []
+
+        for data in list_of_content:
+            channel_data, news = data[:1], data[1:]
+
+            if limit < len(news):
+                news = news[:limit]
+
+                if news:
+                    new_list_of_content.append(channel_data + news)
+                break
+            else:
+                limit -= len(news)
+                new_list_of_content.append(channel_data + news)
+
+        if self.verbose:
+            list_of_sources = self.get_sources_from_data(new_list_of_content)
+            info_print(
+                "According to the entered date, news was "
+                "received from the following sources: {}".format(
+                    ", ".join(list_of_sources)
+                )
+            )
+
+        return new_list_of_content
+
+    @staticmethod
+    def get_sources_from_data(list_of_data):
+        list_of_sources = []
+        for data in list_of_data:
+            list_of_sources.append(data[0]["source"])
+        return list_of_sources
+
     def check_news_by_date(self):
         date_in_correct_format = self.get_date_in_correct_format(self.date)
 
         if date_in_correct_format is None:
-            error_print(f"{self.date!r} is incorrect date. Please try to enter the date in correct format")
+            error_print(f"{self.date!r} is an incorrect date. Please try to enter the date in a correct format")
             return False
 
         path = self.get_path(self._get_abspath_to_storage(), date_in_correct_format[:7])
@@ -178,11 +217,23 @@ class FindManagerWhenEnterDate(StorageManager):
             self._news_was_not_founded(date_in_correct_format)
             return False
 
-
+    def data_output(self, data):
+        if self.json_flag:
+            if len(data) == 1:
+                data = data[0]
+            if self.verbose:
+                info_print("News will be printed in JSON format")
+            console_json_output(data)
+        else:
+            if self.verbose:
+                info_print("News will be printed in a standard format")
+            for feed in data:
+                console_output_feed(feed)
 
 
 def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs):
-    if data is not None and source is not None:  # after parsing, writing data to the storage
+    # after parsing, writing data to the storage
+    if data is not None and source is not None:
         st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose)
         response_from_split_data_by_news = st_manager.split_data_by_news()
 
@@ -192,6 +243,8 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         channel_data, dict_for_data_saving = response_from_split_data_by_news
         st_manager.make_dir_by_key(dict_for_data_saving)
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
+
+    # if user enter only date
     elif date is not None and source is None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
         st_manager = FindManagerWhenEnterDate(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
@@ -201,30 +254,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
             return False
 
         list_of_content = st_manager.get_content_by_paths(paths)
-
-
-
-
-
-
-
-    #     st_manager = StorageManager(source, data=data)
-    #     file_name = st_manager.get_file_name()
-    #
-    #     abs_file_path = os.path.abspath(__file__)
-    #     path, name = os.path.split(abs_file_path)
-    #
-    #     path = st_manager.get_path(path, "storage", file_name[:7])
-    #     st_manager.make_dir(path)
-    #
-    #     path = st_manager.get_path(path, file_name)
-    #     st_manager.write_to_storage(path)
-    # elif date is not None and source is None:
-    #     st_manager = StorageManager(date=date)
-    #     file_name = st_manager.get_file_name()
-    #
-    #     abs_file_path = os.path.abspath(__file__)
-    #     path, name = os.path.split(abs_file_path)
-    #
-    #     path = st_manager.get_path(path, "storage", file_name[:7])
-
+        if verbose:
+            info_print("The news has been extracted from the storage")
+        list_of_content = st_manager.slice_content_by_limit(list_of_content)
+        st_manager.data_output(list_of_content)
