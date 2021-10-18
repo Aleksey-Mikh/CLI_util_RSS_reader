@@ -7,12 +7,27 @@ import datetime
 from cool_project.cervices.print_functions import error_print, warning_print, info_print
 
 
+LIST_OF_DATE_FORMATS = [
+            "%a, %d %b %Y %H:%M:%S %z",
+            "%Y%m%d",
+            "%Y-%m-%dT%H:%M:%SZ",
+        ]
+
+
 class StorageManager:
 
-    def __init__(self, source, date=None, data=None):
+    def __init__(self, source, *, verbose, date=None, data=None):
         self.date = date
         self.source = source
         self.data = data
+        self.verbose = verbose
+
+    def get_file_name(self, date):
+        """case when program after parsing"""
+        source = re.sub(r"\W", "_", self.source)
+        file_name = f'{date}_{source}.json'
+
+        return file_name
 
     @staticmethod
     def write_to_storage(path, data):
@@ -35,62 +50,41 @@ class StorageManager:
     def check_path(path):
         return Path(path).exists()
 
-    def get_file_name(self, date):
-        """case when program after parsing"""
-        source = re.sub(r"\W", "_", self.source)
-        file_name = f'{date}_{source}.json'
-
-        return file_name
-
     @staticmethod
     def get_path(old_path, *args):
         return Path(old_path, *args)
 
     @staticmethod
     def get_date_in_correct_format(date_str):
-        list_of_date_formats = [
-            "%a, %d %b %Y %H:%M:%S %z",
-            "%Y%m%d",
-            "%Y-%m-%dT%H:%M:%SZ",
-        ]
-        for date_format in list_of_date_formats:
+        for date_format in LIST_OF_DATE_FORMATS:
             try:
                 date_time_obj = datetime.datetime.strptime(date_str, date_format)
                 return str(date_time_obj.date())
             except ValueError:
                 # if the correct format wasn't received,
-                # proceed to the next format in list_of_date_formats
+                # proceed to the next format in LIST_OF_DATE_FORMATS
                 pass
 
         return None
 
-    def split_data_by_news(self):
-        dict_for_data_saving = {}
-        channel_data, data = self.data[:1], self.data[1:]
-
-        for news in data:
-            date_in_correct_format = self.get_date_in_correct_format(news["date"])
-
-            if date_in_correct_format is None:
-                error_print(f"The site {self.source} uses an unsupported date format. Storage data has failed.")
-                return None
-
-            dict_for_data_saving[date_in_correct_format] = dict_for_data_saving.get(date_in_correct_format, []) + [news]
-
-        return channel_data, dict_for_data_saving
-
-    @staticmethod
-    def _get_abspath():
+    def _get_abspath_to_storage(self):
         abs_file_path = os.path.abspath(__file__)
         path, name = os.path.split(abs_file_path)
+        path = self.get_path(path, "storage")
         return path
+
+
+class DataManagerInStorageAfterParsing(StorageManager):
+
+    def __init__(self, source, *, data, verbose):
+        super().__init__(source, data=data, verbose=verbose)
 
     def make_dir_by_key(self, data_dict):
         for key in data_dict.keys():
-            path = self._get_abspath()
+            path = self._get_abspath_to_storage()
 
             # key[:7] it is the year and the month in the format: 2021-10
-            path = self.get_path(path, "storage", key[:7])
+            path = self.get_path(path, key[:7])
             self.make_dir(path)
 
             path = self.get_path(path, key)
@@ -99,8 +93,8 @@ class StorageManager:
     def control_of_exist(self, data_dict, channel_data):
         for date, list_of_news in data_dict.items():
             file_name = self.get_file_name(date)
-            path = self._get_abspath()
-            path = self.get_path(path, "storage", date[:7], date, file_name)
+            path = self._get_abspath_to_storage()
+            path = self.get_path(path, date[:7], date, file_name)
 
             if self.check_path(path):
                 self._write_or_update_data(path, channel_data, list_of_news, "update")
@@ -115,7 +109,7 @@ class StorageManager:
             for news in list_of_news:
                 if news not in data_from_file:
                     data_to_file.append(news)
-                    print("file was updated")
+                    info_print("Data in storage was updated")
 
             # data_from_file[:1] - channel data
             data_to_file = data_from_file[:1] + data_to_file + data_from_file[1:]
@@ -124,10 +118,27 @@ class StorageManager:
             data_to_file = channel_data + list_of_news
             self.write_to_storage(path, data_to_file)
 
+    def split_data_by_news(self):
+        dict_for_data_saving = {}
+        channel_data, data = self.data[:1], self.data[1:]
 
-def storage_control(*, date=None, source=None, data=None):
+        for news in data:
+            date_in_correct_format = self.get_date_in_correct_format(news["date"])
+
+            if date_in_correct_format is None:
+                error_print(f"The site {self.source} uses an unsupported date format. Storage data has failed.")
+                if self.verbose is not None:
+                    info_print("Supported date format:\n\t{}".format('\n\t'.join(LIST_OF_DATE_FORMATS)))
+                return None
+
+            dict_for_data_saving[date_in_correct_format] = dict_for_data_saving.get(date_in_correct_format, []) + [news]
+
+        return channel_data, dict_for_data_saving
+
+
+def storage_control(*, date=None, source=None, data=None, verbose=None):
     if data is not None and source is not None:  # after parsing, writing data to the storage
-        st_manager = StorageManager(source, data=data)
+        st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose)
         response_from_split_data_by_news = st_manager.split_data_by_news()
 
         if response_from_split_data_by_news is None:
