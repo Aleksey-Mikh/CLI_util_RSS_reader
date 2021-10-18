@@ -77,7 +77,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
         """case when program after parsing"""
         source = re.sub(r"\W", "_", self.source)
         file_name = f'{date}_{source}.json'
-
         return file_name
 
     def make_dir_by_key(self, data_dict):
@@ -110,7 +109,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
             for news in list_of_news:
                 if news not in data_from_file:
                     data_to_file.append(news)
-                    info_print("Data in storage was updated")
 
             # data_from_file[:1] - channel data
             data_to_file = data_from_file[:1] + data_to_file + data_from_file[1:]
@@ -158,7 +156,18 @@ class FindManagerWhenEnterDate(StorageManager):
 
     def slice_content_by_limit(self, list_of_content):
         if self.limit is None:
+            if self.verbose:
+                list_of_sources = self.get_sources_from_data(list_of_content)
+                info_print(
+                    "According to the entered date, news was "
+                    "received from the following sources: {}".format(
+                        ", ".join(list_of_sources)
+                    )
+                )
             return list_of_content
+        if self.limit <= 0:
+            error_print("The limit is less than or equal to 0, news cannot be printed.")
+            return False
 
         limit = self.limit
         new_list_of_content = []
@@ -219,7 +228,7 @@ class FindManagerWhenEnterDate(StorageManager):
 
     def data_output(self, data):
         if self.json_flag:
-            if len(data) == 1:
+            if len(data) == 1 and isinstance(data[0], list):
                 data = data[0]
             if self.verbose:
                 info_print("News will be printed in JSON format")
@@ -231,8 +240,50 @@ class FindManagerWhenEnterDate(StorageManager):
                 console_output_feed(feed)
 
 
+class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
+
+    def __init__(self, source, *, date, verbose, json_flag, limit):
+        super().__init__(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
+
+    def get_file_name(self):
+        source = re.sub(r"\W", "_", self.source)
+        file_name = f'{self.date}_{source}.json'
+        return file_name
+
+    def news_was_not_founded(self):
+        error_print(f"No news was founded for this date and: {self.date}, and this source: {self.source}")
+
+    def data_output(self, data):
+        if self.json_flag:
+            if self.verbose:
+                info_print("News will be printed in JSON format")
+            console_json_output(data)
+        else:
+            if self.verbose:
+                info_print("News will be printed in a standard format")
+            console_output_feed(data)
+
+    def slice_content_by_limit(self, data):
+        if self.verbose:
+            info_print(f"The news was searched in the storage by date: {self.date}, and source: {self.source}")
+        if self.limit is None:
+            return data
+        if self.limit <= 0:
+            error_print("The limit is less than or equal to 0, news cannot be printed.")
+            return False
+
+        limit = self.limit
+        channel_data, news = data[:1], data[1:]
+
+        if limit < len(news):
+            news = news[:limit]
+        new_list_of_content = channel_data + news
+
+        return new_list_of_content
+
+
 def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs):
-    # after parsing, writing data to the storage
+    # after parsing, writing a data to the storage
     if data is not None and source is not None:
         st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose)
         response_from_split_data_by_news = st_manager.split_data_by_news()
@@ -244,7 +295,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         st_manager.make_dir_by_key(dict_for_data_saving)
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
 
-    # if user enter only date
+    # if user enter only a date
     elif date is not None and source is None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
         st_manager = FindManagerWhenEnterDate(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
@@ -257,4 +308,31 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         if verbose:
             info_print("The news has been extracted from the storage")
         list_of_content = st_manager.slice_content_by_limit(list_of_content)
+        if not list_of_content:
+            return False
         st_manager.data_output(list_of_content)
+
+    # if user enter a date and a source
+    elif date is not None and source is not None:
+        json_flag, limit = kwargs["json"], kwargs["limit"]
+        st_manager = FindManagerWhenEnterDateAndSource(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
+        paths = st_manager.check_news_by_date()
+        st_manager.date = st_manager.get_date_in_correct_format(date)
+
+        if not paths:
+            return False
+        file_name = st_manager.get_file_name()
+
+        path = list(filter(lambda x: x[-len(file_name):] == file_name, paths))
+        if not path:
+            st_manager.news_was_not_founded()
+            return False
+
+        data = st_manager.read_from_storage(path[0])
+        if verbose:
+            info_print("The news has been extracted from the storage")
+
+        data = st_manager.slice_content_by_limit(data)
+        if not data:
+            return False
+        st_manager.data_output(data)

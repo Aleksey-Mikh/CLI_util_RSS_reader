@@ -158,7 +158,7 @@ class RSSParser:
 
 
 @decorator_delimiter("Start Program", "Stop Program")
-# @intercept_errors
+# @intercept_errors  # TODO del #
 def start_parsing(reader):
     """Load parsing and print data"""
     if reader.check_date_and_source():
