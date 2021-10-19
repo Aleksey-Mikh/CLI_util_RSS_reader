@@ -105,7 +105,7 @@ class StorageManager:
     @staticmethod
     def get_date_in_correct_format(date_str):
         """
-        The function gets a string containing the date and
+        The method gets a string containing the date and
         converts it according to known formats.
         If the conversion failed returns None.
 
@@ -125,17 +125,40 @@ class StorageManager:
 
 
 class DataManagerInStorageAfterParsing(StorageManager):
+    """
+    A class that works with the storage when the program
+    is running in the normal news parsing mode.
+    Here the news is processed and added to the storage.
+    """
 
     def __init__(self, source, *, data, verbose):
+        """
+        Init DataManagerInStorageAfterParsing
+        :param source: news source
+        :param verbose: verbose mode
+        :param data: data to write to the storage
+        """
         super().__init__(source, data=data, verbose=verbose)
 
     def get_file_name(self, date):
-        """case when program after parsing"""
+        """
+        The method that gets the correct date of creation of the news
+        and the source of the news and generates
+        the file name by which the news will be saved.
+
+        :param date: the correct date of creation of the news
+        :return: file name
+        """
         source = re.sub(r"\W", "_", self.source)
         file_name = f'{date}_{source}.json'
         return file_name
 
     def make_dir_by_key(self, data_dict):
+        """
+        Creating folders in which news will be stored.
+
+        :param data_dict: dictionary with news
+        """
         for key in data_dict.keys():
             path = self._get_abspath_to_storage()
 
@@ -147,6 +170,16 @@ class DataManagerInStorageAfterParsing(StorageManager):
             self.make_dir(path)
 
     def control_of_exist(self, data_dict, channel_data):
+        """
+        A method that checks if the file already exists.
+        If the file exists, it runs the _write_or_update_data method
+        with the `update' flag,
+        if there is no file, it runs the _write_or_update_data method
+        with the `write' flag.
+
+        :param data_dict: dictionary with news
+        :param channel_data: channel data
+        """
         for date, list_of_news in data_dict.items():
             file_name = self.get_file_name(date)
             path = self._get_abspath_to_storage()
@@ -158,6 +191,17 @@ class DataManagerInStorageAfterParsing(StorageManager):
                 self._write_or_update_data(path, channel_data, list_of_news, "write")
 
     def _write_or_update_data(self, path, channel_data, list_of_news, flag):
+        """
+        If the flag is set to 'update', it reads data from the file
+        and writes to the beginning of the file only those
+        data that are not yet in the file.
+        If the flag is set to 'write', it writes data to a file.
+
+        :param path: путь до файла
+        :param channel_data: channel data
+        :param list_of_news: list of news
+        :param flag: 'update' or 'write'
+        """
         if flag == "update":
             data_from_file = self.read_from_storage(path)
             data_to_file = []
@@ -174,6 +218,15 @@ class DataManagerInStorageAfterParsing(StorageManager):
             self.write_to_storage(path, data_to_file)
 
     def split_data_by_news(self):
+        """
+        A method that splits the data received from the site by dates
+        and writes it to the dictionary,
+        where the key is the date and the value is a list of news.
+        if the site uses dates in an unsupported format,
+        it throws an error and returns None
+
+        :return: (channel_data, dict_for_data_saving) or None
+        """
         dict_for_data_saving = {}
         channel_data, data = self.data[:1], self.data[1:]
 
@@ -192,17 +245,21 @@ class DataManagerInStorageAfterParsing(StorageManager):
 
 
 class FindManagerWhenEnterDate(StorageManager):
+    """
+
+    """
 
     def __init__(self, source, *, date, verbose, json_flag, limit):
         self.json_flag = json_flag
         self.limit = limit
         super().__init__(source, date=date, verbose=verbose)
 
-    @staticmethod
-    def _news_was_not_founded(date):
-        error_print(f"No news was found for this date - {date}")
-
     def get_content_by_paths(self, paths):
+        """
+
+        :param paths:
+        :return:
+        """
         list_of_content = []
         for path in paths:
             data_from_file = self.read_from_storage(path)
@@ -211,6 +268,11 @@ class FindManagerWhenEnterDate(StorageManager):
         return list_of_content
 
     def slice_content_by_limit(self, list_of_content):
+        """
+
+        :param list_of_content:
+        :return:
+        """
         if self.limit is None:
             if self.verbose:
                 list_of_sources = self.get_sources_from_data(list_of_content)
@@ -252,14 +314,11 @@ class FindManagerWhenEnterDate(StorageManager):
 
         return new_list_of_content
 
-    @staticmethod
-    def get_sources_from_data(list_of_data):
-        list_of_sources = []
-        for data in list_of_data:
-            list_of_sources.append(data[0]["source"])
-        return list_of_sources
-
     def check_news_by_date(self):
+        """
+
+        :return:
+        """
         date_in_correct_format = self.get_date_in_correct_format(self.date)
 
         if date_in_correct_format is None:
@@ -283,6 +342,11 @@ class FindManagerWhenEnterDate(StorageManager):
             return False
 
     def data_output(self, data):
+        """
+
+        :param data:
+        :return:
+        """
         if self.json_flag:
             if len(data) == 1 and isinstance(data[0], list):
                 data = data[0]
@@ -294,6 +358,27 @@ class FindManagerWhenEnterDate(StorageManager):
                 info_print("News will be printed in a standard format")
             for feed in data:
                 console_output_feed(feed)
+
+    @staticmethod
+    def _news_was_not_founded(date):
+        """
+
+        :param date:
+        :return:
+        """
+        error_print(f"No news was found for this date - {date}")
+
+    @staticmethod
+    def get_sources_from_data(list_of_data):
+        """
+
+        :param list_of_data:
+        :return:
+        """
+        list_of_sources = []
+        for data in list_of_data:
+            list_of_sources.append(data[0]["source"])
+        return list_of_sources
 
 
 class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
