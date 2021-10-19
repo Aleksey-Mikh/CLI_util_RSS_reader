@@ -28,7 +28,7 @@ class StorageManager:
         :param source: news source
         :param verbose: verbose mode
         :param date: the date on which you need to receive the news
-        :param data: data to write to the storage
+        :param data: data that need to write to the storage
         """
         self.date = date
         self.source = source
@@ -136,7 +136,7 @@ class DataManagerInStorageAfterParsing(StorageManager):
         Init DataManagerInStorageAfterParsing
         :param source: news source
         :param verbose: verbose mode
-        :param data: data to write to the storage
+        :param data: data that need to write to the storage
         """
         super().__init__(source, data=data, verbose=verbose)
 
@@ -399,19 +399,44 @@ class FindManagerWhenEnterDate(StorageManager):
 
 
 class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
+    """
+    A class that implements data search by date and source
+    """
 
     def __init__(self, source, *, date, verbose, json_flag, limit):
+        """
+        Init FindManagerWhenEnterDateAndSource
+
+        :param source: news source
+        :param verbose: verbose mode
+        :param date: the date on which you need to receive the news.
+        :param json_flag: --json value
+        :param limit: --limit value
+        """
         super().__init__(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
 
     def get_file_name(self):
+        """
+        A method that returns the file name by date and source
+
+        :return: file_name
+        """
         source = re.sub(r"\W", "_", self.source)
         file_name = f'{self.date}_{source}.json'
         return file_name
 
     def news_was_not_founded(self):
+        """
+        Error output when news by date and source is not found.
+        """
         error_print(f"No news was founded for this date and: {self.date}, and this source: {self.source}")
 
     def data_output(self, data):
+        """
+        Output information on the terminal in JSON or standard format
+
+        :param data: list with news
+        """
         if self.json_flag:
             if self.verbose:
                 info_print("News will be printed in JSON format")
@@ -422,6 +447,13 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
             console_output_feed(data)
 
     def slice_content_by_limit(self, data):
+        """
+        The method that slice the list of news
+        by the limit set by the user.
+
+        :param data: a list of dictionary with news
+        :return: a list of dictionary with news
+        """
         if self.verbose:
             info_print(f"The news was searched in the storage by date: {self.date}, and source: {self.source}")
         if self.limit is None:
@@ -441,6 +473,29 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
 
 
 def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs):
+    """
+    The interface between rss_reader and data storage.
+    Depending on the received data,
+    call the following managers to work with the storage:
+
+    DataManagerInStorageAfterParsing - if the data and the source
+    are received, the case when data save in the storage after parsing;
+
+    FindManagerWhenEnterDate - if date is received and source is None,
+    case when a date-only search in the storage;
+
+    FindManagerWhenEnterDateAndSource - if date and source
+    are received, case when a search in the storage by date and source;
+
+    Accepts only keyword arguments.
+
+    :param date: the date on which you need to receive the news
+    :param source: news source
+    :param data: data that need to write to the storage
+    :param verbose: verbose mode
+    :param kwargs: --json value, --limit value or other
+    :return:
+    """
     # after parsing, writing a data to the storage
     if data is not None and source is not None:
         st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose)
