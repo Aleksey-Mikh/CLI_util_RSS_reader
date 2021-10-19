@@ -197,7 +197,7 @@ class DataManagerInStorageAfterParsing(StorageManager):
         data that are not yet in the file.
         If the flag is set to 'write', it writes data to a file.
 
-        :param path: путь до файла
+        :param path: the path to the file
         :param channel_data: channel data
         :param list_of_news: list of news
         :param flag: 'update' or 'write'
@@ -246,19 +246,30 @@ class DataManagerInStorageAfterParsing(StorageManager):
 
 class FindManagerWhenEnterDate(StorageManager):
     """
-
+    A class that implements data search by date
     """
 
     def __init__(self, source, *, date, verbose, json_flag, limit):
+        """
+        Init FindManagerWhenEnterDate
+
+        :param source: news source
+        :param verbose: verbose mode
+        :param date: the date on which you need to receive the news
+        :param json_flag: --json value
+        :param limit: --limit value
+        """
         self.json_flag = json_flag
         self.limit = limit
         super().__init__(source, date=date, verbose=verbose)
 
     def get_content_by_paths(self, paths):
         """
+        A method that has received a list of paths corresponding
+        to the date and collects news from files in this paths.
 
-        :param paths:
-        :return:
+        :param paths: a list of paths
+        :return: a list of dictionary with news
         """
         list_of_content = []
         for path in paths:
@@ -269,9 +280,11 @@ class FindManagerWhenEnterDate(StorageManager):
 
     def slice_content_by_limit(self, list_of_content):
         """
+        The method that slice the list of news
+        by the limit set by the user.
 
-        :param list_of_content:
-        :return:
+        :param list_of_content: a list of dictionary with news
+        :return: a list of dictionary with news
         """
         if self.limit is None:
             if self.verbose:
@@ -316,8 +329,10 @@ class FindManagerWhenEnterDate(StorageManager):
 
     def check_news_by_date(self):
         """
+        A method that verifies that there is news
+        in the repository by the received date
 
-        :return:
+        :return: False or list of paths
         """
         date_in_correct_format = self.get_date_in_correct_format(self.date)
 
@@ -343,9 +358,9 @@ class FindManagerWhenEnterDate(StorageManager):
 
     def data_output(self, data):
         """
+        Output information on the terminal in JSON or standard format
 
-        :param data:
-        :return:
+        :param data: list with news
         """
         if self.json_flag:
             if len(data) == 1 and isinstance(data[0], list):
@@ -362,18 +377,20 @@ class FindManagerWhenEnterDate(StorageManager):
     @staticmethod
     def _news_was_not_founded(date):
         """
+        Error output when news by date is not found.
 
-        :param date:
-        :return:
+        :param date: date entered by the user
         """
         error_print(f"No news was found for this date - {date}")
 
     @staticmethod
     def get_sources_from_data(list_of_data):
         """
+        A method that receives a list of news and
+        generates a list of sources of this news
 
-        :param list_of_data:
-        :return:
+        :param list_of_data: news list
+        :return: list of news sources
         """
         list_of_sources = []
         for data in list_of_data:
