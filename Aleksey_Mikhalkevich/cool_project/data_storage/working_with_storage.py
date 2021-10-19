@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 import datetime
 
-from cool_project.cervices.print_functions import error_print, warning_print, info_print
+from cool_project.cervices.print_functions import error_print, info_print
 from cool_project.cervices.data_output import console_output_feed, console_json_output
 
 
@@ -16,14 +16,31 @@ LIST_OF_DATE_FORMATS = [
 
 
 class StorageManager:
+    """
+    A base class for working with storage that implements methods
+    for writing data to storage, reading from storage,
+    getting paths, and converting dates.
+    """
 
     def __init__(self, source, *, verbose, date=None, data=None):
+        """
+        Init StorageManager
+        :param source: news source
+        :param verbose: verbose mode
+        :param date: the date on which you need to receive the news
+        :param data: data to write to the storage
+        """
         self.date = date
         self.source = source
         self.data = data
         self.verbose = verbose
 
     def _get_abspath_to_storage(self):
+        """
+        Getting the absolute path to this file.
+
+        :return: absolute path to the file
+        """
         abs_file_path = os.path.abspath(__file__)
         path, name = os.path.split(abs_file_path)
         path = self.get_path(path, "storage")
@@ -31,31 +48,70 @@ class StorageManager:
 
     @staticmethod
     def write_to_storage(path, data):
+        """
+        Writing data to the storage by the received path.
+
+        :param path: the path where the data should be stored
+        :param data: storage data
+        """
         with open(path, "w", encoding='utf-8') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
     @staticmethod
     def read_from_storage(path):
+        """
+        Reading data from storage by the received path.
+
+        :param path: the path by which the data should be received
+        """
         with open(path, encoding='utf-8') as File:
             data = json.load(File)
             return data
 
     @staticmethod
     def make_dir(path):
+        """
+        Creating a folder at the got path.
+        If the folder already exists does nothing.
+
+        :param path: the path where the folder should be created
+        """
         if not Path(path).exists():
             p = Path(path)
             p.mkdir()
 
     @staticmethod
     def path_is_exists(path):
+        """
+        Check path exists.
+
+        :param path: A path to check
+        :return: True if a path exists, False if isn't exists
+        """
         return Path(path).exists()
 
     @staticmethod
     def get_path(old_path, *args):
+        """
+        Getting a new path from the old one with the addition
+        of an arbitrary number of components.
+
+        :param old_path: old_path
+        :param args: an arbitrary number of components for new path
+        :return: new path
+        """
         return Path(old_path, *args)
 
     @staticmethod
     def get_date_in_correct_format(date_str):
+        """
+        The function gets a string containing the date and
+        converts it according to known formats.
+        If the conversion failed returns None.
+
+        :param date_str: a string containing the date
+        :return: a date in format %Y-%m-%d or None
+        """
         for date_format in LIST_OF_DATE_FORMATS:
             try:
                 date_time_obj = datetime.datetime.strptime(date_str, date_format)
@@ -306,7 +362,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
 
         list_of_content = st_manager.get_content_by_paths(paths)
         if verbose:
-            info_print("The news has been extracted from the storage")
+            info_print("The news has been successfully extracted from the storage")
         list_of_content = st_manager.slice_content_by_limit(list_of_content)
         if not list_of_content:
             return False
@@ -315,7 +371,9 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
     # if user enter a date and a source
     elif date is not None and source is not None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
-        st_manager = FindManagerWhenEnterDateAndSource(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
+        st_manager = FindManagerWhenEnterDateAndSource(
+            source, date=date, verbose=verbose, json_flag=json_flag, limit=limit
+        )
         paths = st_manager.check_news_by_date()
         st_manager.date = st_manager.get_date_in_correct_format(date)
 
@@ -330,7 +388,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
 
         data = st_manager.read_from_storage(path[0])
         if verbose:
-            info_print("The news has been extracted from the storage")
+            info_print("The news has been successfully extracted from the storage")
 
         data = st_manager.slice_content_by_limit(data)
         if not data:

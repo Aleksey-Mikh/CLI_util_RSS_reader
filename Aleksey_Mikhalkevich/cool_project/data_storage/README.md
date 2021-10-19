@@ -2,7 +2,7 @@ Package description
 ===
 This package contains modules that working with the storage and the storage itself.
 
-## Format of storage:
+## Format of the storage:
 
     storage/
         2021-09/
