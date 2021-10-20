@@ -4,6 +4,7 @@ from cool_project.data_storage.storage_managers import (
     FindManagerWhenEnterDateAndSource,
     DataManagerInStorageAfterParsing
 )
+from cool_project.conversion_to_format.conversion_to_html import convert_to_html
 
 
 def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs):
@@ -41,6 +42,9 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         channel_data, dict_for_data_saving = response_from_split_data_by_news
         st_manager.make_dir_by_key(dict_for_data_saving)
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
+
+        if kwargs["to_html"] is not None:
+            convert_to_html(data, kwargs["to_html"])
 
     # if user enter only a date
     elif date is not None and source is None:
