@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<style>
+    .channel-data {
+        text-align: center;
+        font-weight: 600;
+    }
+    .border {
+        border-top-style: dotted;
+        border-bottom-style: dotted;
+        border-width: 2px;
+        padding: 20px;
+        margin: 15px;
+    }
+</style>
+<body>
+{% for feed in feeds %}
+<div>
+    {% for news in feed %}
+    {% if news.channel_title %}
+    <div>
+        <p class="channel-data">{{ news.channel_title }}</p>
+        <p class="channel-data">Source: <a href="{{ news.source }}">{{ news.source }}</a></p>
+    </div>
+    {% else %}
+    <div class="border">
+        {% if news.title %}
+        <div>
+            <p>Title: {{ news.title }}</p>
+        </div>
+        {% endif %}
+
+        {% if news.date %}
+        <div>
+            <p>Date: {{ news.date }}</p>
+        </div>
+        {% endif %}
+
+        {% if news.link %}
+        <div>
+            <p>Link: <a href="{{ news.link }}">{{ news.link }}</a></p>
+        </div>
+        {% endif %}
+
+        {% if news.category %}
+        <div>
+            {% if news.category is is_list %}
+            <p>Category:</p>
+            <ul>
+                {% for category in news.category %}
+                <li>{{ category }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Category: {{ news.category }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if news.description %}
+        <div>
+            <p>Description: {{ news.description }}</p>
+        </div>
+        {% endif %}
+
+        {% if news.more_description %}
+        <div>
+            <p>More description: {{ news.more_description }}</p>
+        </div>
+        {% endif %}
+
+        {% if news.comments %}
+        <div>
+            <p>Comments: <a href="{{ news.comments }}">{{ news.comments }}</a></p>
+        </div>
+        {% endif %}
+
+        {% if news.media_object %}
+        <div>
+            {% if news.media_object is is_list %}
+            <p>Media object:</p>
+            <ul>
+                {% for media_object in news.media_object %}
+                <li><a href="{{ media_object }}">{{ media_object }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Media object: <a href="{{ news.media_object }}">{{ news.media_object }}</a></p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if news.extra_links %}
+        <div>
+            {% if news.extra_links is is_list %}
+            <p>Extra links:</p>
+            <ul>
+                {% for link in news.extra_links %}
+                <li><a href="{{ link }}">{{ link }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Extra links: <a href="{{ news.extra_links }}">{{ news.extra_links }}</a></p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if news.source_feed %}
+        <div>
+            {% if news.extra_links is is_list %}
+            <p>Source feed:</p>
+            <ul>
+                {% for source in news.source_feed %}
+                <li><a href="{{ source }}">{{ source }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Source feed: <a href="{{ source }}">{{ source }}</a></p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endfor %}
+</body>
+</html>
