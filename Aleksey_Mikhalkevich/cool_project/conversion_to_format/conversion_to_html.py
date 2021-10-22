@@ -53,6 +53,7 @@ def convert_to_html(data, path, verbose):
         make_dir(path)
         with open(Path(path, FILE_NAME), "w", encoding="utf-8") as file:
             file.write(result)
+        info_print(f"A feed in HTML format was saved on the path: {Path(path, FILE_NAME)}")
         if verbose:
             info_print("Conversion to HTML ended")
     except Exception:

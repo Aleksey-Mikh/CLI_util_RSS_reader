@@ -1,4 +1,4 @@
-PROGRAM_VERSION = "3.0.0"
+PROGRAM_VERSION = "3.4.0"
 
 HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "

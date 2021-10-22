@@ -101,7 +101,10 @@ class RSSParser:
         if self.date is None and self.source is not None:
             return True
         elif self.date is not None:
-            storage_control(date=self.date, source=self.source, verbose=self.verbose, json=self.json, limit=self.limit)
+            storage_control(
+                date=self.date, source=self.source, verbose=self.verbose,
+                json=self.json, limit=self.limit, to_html=self.to_html
+            )
         elif self.source is None:
             if self.verbose:
                 info_print(f"Source is {self.source}")
@@ -126,7 +129,9 @@ class RSSParser:
                 info_print("Output news in standard format")
             console_output_feed(self.serializable_data)
 
-        storage_control(data=self.serializable_data, source=self.source, verbose=self.verbose, to_html=self.to_html)
+        storage_control(
+            data=self.serializable_data, source=self.source, verbose=self.verbose, to_html=self.to_html
+        )
 
     @intercept_errors
     def _get_html(self):

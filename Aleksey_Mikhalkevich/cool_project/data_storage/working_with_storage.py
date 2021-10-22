@@ -63,6 +63,9 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
             return False
         st_manager.data_output(list_of_content)
 
+        if kwargs["to_html"] is not None:
+            convert_to_html(list_of_content, kwargs["to_html"], verbose)
+
     # if user enter a date and a source
     elif date is not None and source is not None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
@@ -89,3 +92,6 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         if not data:
             return False
         st_manager.data_output(data)
+
+        if kwargs["to_html"] is not None:
+            convert_to_html(data, kwargs["to_html"], verbose)
