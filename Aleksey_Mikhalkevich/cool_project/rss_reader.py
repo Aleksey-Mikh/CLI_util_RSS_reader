@@ -32,6 +32,7 @@ class RSSParser:
         self.verbose = argparse_params.verbose
         self.date = argparse_params.date
         self.to_html = argparse_params.to_html
+        self.to_pdf = argparse_params.to_pdf
         self.serializable_data = None
 
     @staticmethod
@@ -51,6 +52,7 @@ class RSSParser:
         parser.add_argument("--limit", help="Limit news topics if this parameter provided")
         parser.add_argument("--date", help="Take a date in %Y%m%d format. Example: 20191206")
         parser.add_argument("--to-html", help="This argument receives the path where new file will be saved.")
+        parser.add_argument("--to-pdf", help="This argument receives the path where new file will be saved.")
 
         args, unknown = parser.parse_known_args()
 
@@ -103,7 +105,7 @@ class RSSParser:
         elif self.date is not None:
             storage_control(
                 date=self.date, source=self.source, verbose=self.verbose,
-                json=self.json, limit=self.limit, to_html=self.to_html
+                json=self.json, limit=self.limit, to_html=self.to_html, to_pdf=self.to_pdf
             )
         elif self.source is None:
             if self.verbose:
@@ -130,7 +132,8 @@ class RSSParser:
             console_output_feed(self.serializable_data)
 
         storage_control(
-            data=self.serializable_data, source=self.source, verbose=self.verbose, to_html=self.to_html
+            data=self.serializable_data, source=self.source,
+            verbose=self.verbose, to_html=self.to_html, to_pdf=self.to_pdf
         )
 
     @intercept_errors

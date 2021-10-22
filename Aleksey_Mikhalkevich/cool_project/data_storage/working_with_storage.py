@@ -5,6 +5,7 @@ from cool_project.data_storage.storage_managers import (
     DataManagerInStorageAfterParsing
 )
 from cool_project.conversion_to_format.conversion_to_html import convert_to_html
+from cool_project.conversion_to_format.conversion_to_pdf import convertor_to_pdf
 
 
 def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs):
@@ -44,8 +45,10 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
 
         if kwargs["to_html"] is not None:
-
             convert_to_html(data, kwargs["to_html"], verbose)
+
+        if kwargs["to_pdf"] is not None:
+            convertor_to_pdf(data, kwargs["to_pdf"], verbose)
 
     # if user enter only a date
     elif date is not None and source is None:
@@ -66,6 +69,9 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
 
         if kwargs["to_html"] is not None:
             convert_to_html(list_of_content, kwargs["to_html"], verbose)
+
+        if kwargs["to_pdf"] is not None:
+            convertor_to_pdf(list_of_content, kwargs["to_pdf"], verbose)
 
     # if user enter a date and a source
     elif date is not None and source is not None:
@@ -96,3 +102,6 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
 
         if kwargs["to_html"] is not None:
             convert_to_html(data, kwargs["to_html"], verbose)
+
+        if kwargs["to_pdf"] is not None:
+            convertor_to_pdf(data, kwargs["to_pdf"], verbose)

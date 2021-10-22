@@ -49,12 +49,12 @@ def convert_to_html(data, path, verbose):
     template = env.get_template("template.html")
     result = template.render(content)
     path = Path(path)
+    if verbose:
+        info_print("Conversion to HTML ended")
     try:
         make_dir(path)
         with open(Path(path, FILE_NAME), "w", encoding="utf-8") as file:
             file.write(result)
         info_print(f"A feed in HTML format was saved on the path: {Path(path, FILE_NAME)}")
-        if verbose:
-            info_print("Conversion to HTML ended")
     except Exception:
         error_print("The entered path cannot be created")
