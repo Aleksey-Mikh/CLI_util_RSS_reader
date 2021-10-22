@@ -44,6 +44,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
 
         if kwargs["to_html"] is not None:
+
             convert_to_html(data, kwargs["to_html"], verbose)
 
     # if user enter only a date

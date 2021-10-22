@@ -124,6 +124,8 @@ def serialization_item(item):
     """
     try:
         title = item.find("title").get_text(strip=True)
+        title = BeautifulSoup(title, 'html.parser')
+        title = str(title)
     except AttributeError:
         title = None
 
