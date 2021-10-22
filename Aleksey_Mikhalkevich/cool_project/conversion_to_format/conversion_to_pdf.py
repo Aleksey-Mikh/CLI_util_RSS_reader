@@ -5,6 +5,65 @@ from fpdf import FPDF
 
 class PDF(FPDF):
 
+    def _get_item(self, news):
+        if news["title"]:
+            self.multi_cell(0, 5, f"Title: {news['title']}")
+            self.ln()
+        if news["date"]:
+            self.multi_cell(0, 5, f"date of publication: {news['date']}")
+            self.ln()
+        if news["link"]:
+            self.multi_cell(0, 5, f"Link: {news['link']}")
+            self.ln()
+        if news["author"]:
+            self.multi_cell(0, 5, f"Author: {news['author']}")
+            self.ln()
+
+        if news["category"]:
+            if self.is_list(news["category"]):
+                for category in news["category"]:
+                    self.cell(0, 5, "Categories: ", ln=1)
+                    self.multi_cell(0, 5, f"{' ' * 5}{category}")
+            else:
+                self.multi_cell(0, 5, f"Category: {news['category']}")
+            self.ln()
+
+        if news["description"]:
+            self.multi_cell(0, 5, f"Description: {news['description']}")
+            self.ln()
+        if news["more_description"]:
+            self.multi_cell(0, 5, f"More description: {news['more_description']}")
+            self.ln()
+        if news["comments"]:
+            self.multi_cell(0, 5, f"Comments: {news['comments']}")
+            self.ln()
+
+        if news["media_object"]:
+            if self.is_list(news["media_object"]):
+                for media in news["media_object"]:
+                    self.cell(0, 5, "Media objects: ", ln=1)
+                    self.multi_cell(0, 5, f"{' ' * 5}{media}")
+            else:
+                self.multi_cell(0, 5, f"Media object: {news['media_object']}")
+            self.ln()
+
+        if news["extra_links"]:
+            if self.is_list(news["extra_links"]):
+                for extra_link in news["extra_links"]:
+                    self.cell(0, 5, "Extra links: ", ln=1)
+                    self.multi_cell(0, 5, f"{' ' * 5}{extra_link}")
+            else:
+                self.multi_cell(0, 5, f"Extra link: {news['extra_links']}")
+            self.ln()
+
+        if news["source_feed"]:
+            if self.is_list(news["source_feed"]):
+                for source in news["source_feed"]:
+                    self.cell(0, 5, "Sources: ", ln=1)
+                    self.multi_cell(0, 5, f"{' ' * 5}{source}")
+            else:
+                self.multi_cell(0, 5, f"Source: {news['source_feed']}")
+
     def body(self, data):
         if not self.is_list(data[0]):
             data = [data]
@@ -15,66 +74,11 @@ class PDF(FPDF):
             for news in feed[1:]:
                 self.cell(0, 5, f"{'-' * 125}", align="C", ln=1)
 
-                if news["title"]:
-                    self.multi_cell(0, 5, f"Title: {news['title']}")
-                    self.ln()
-                if news["date"]:
-                    self.multi_cell(0, 5, f"date of publication: {news['date']}")
-                    self.ln()
-                if news["link"]:
-                    self.multi_cell(0, 5, f"Link: {news['link']}")
-                    self.ln()
-                if news["author"]:
-                    self.multi_cell(0, 5, f"Author: {news['author']}")
-                    self.ln()
-
-                if news["category"]:
-                    if self.is_list(news["category"]):
-                        for category in news["category"]:
-                            self.cell(0, 5, "Categories: ", ln=1)
-                            self.multi_cell(0, 5, f"{' ' * 5}{category}")
-                    else:
-                        self.multi_cell(0, 5, f"Category: {news['category']}")
-                    self.ln("10")
-
-                if news["description"]:
-                    self.multi_cell(0, 5, f"Description: {news['description']}")
-                    self.ln("10")
-                if news["more_description"]:
-                    self.multi_cell(0, 5, f"More description: {news['more_description']}")
-                    self.ln("10")
-                if news["comments"]:
-                    self.multi_cell(0, 5, f"Comments: {news['comments']}")
-                    self.ln()
-
-                if news["media_object"]:
-                    if self.is_list(news["media_object"]):
-                        for media in news["media_object"]:
-                            self.cell(0, 5, "Media objects: ", ln=1)
-                            self.multi_cell(0, 5, f"{' ' * 5}{media}")
-                    else:
-                        self.multi_cell(0, 5, f"Media object: {news['media_object']}")
-                    self.ln()
-
-                if news["extra_links"]:
-                    if self.is_list(news["extra_links"]):
-                        for extra_link in news["extra_links"]:
-                            self.cell(0, 5, "Extra links: ", ln=1)
-                            self.multi_cell(0, 5, f"{' ' * 5}{extra_link}")
-                    else:
-                        self.multi_cell(0, 5, f"Extra link: {news['extra_links']}")
-                    self.ln()
-
-                if news["source_feed"]:
-                    if self.is_list(news["source_feed"]):
-                        for source in news["source_feed"]:
-                            self.cell(0, 5, "Sources: ", ln=1)
-                            self.multi_cell(0, 5, f"{' ' * 5}{source}")
-                    else:
-                        self.multi_cell(0, 5, f"Source: {news['source_feed']}")
+                self._get_item(news)
 
                 self.cell(0, 5, f"{'-' * 125}", align="C")
-                self.ln("20")
+                self.ln()
+                self.ln()
 
     def footer(self):
         self.set_y(-10)
