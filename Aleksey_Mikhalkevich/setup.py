@@ -21,6 +21,8 @@ setup(
         'requests',
         'beautifulsoup4',
         'lxml',
+        'Jinja2',
+        'fpdf',
     ],
     entry_points={
         "console_scripts": [
