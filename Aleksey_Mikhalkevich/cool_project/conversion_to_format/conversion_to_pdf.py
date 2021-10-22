@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fpdf import FPDF
 
 
@@ -8,14 +10,11 @@ class PDF(FPDF):
             data = [data]
 
         for feed in data:
-            self.cell(0, 5, feed[0]["channel_title"], align="C")
-            self.ln()
-            self.cell(0, 5, feed[0]["source"], align="C")
-            self.ln()
+            self.cell(0, 5, f'Channel title: {feed[0]["channel_title"]}', align="C", ln=1)
+            self.cell(0, 5, f'Source: {feed[0]["source"]}', align="C", ln=1)
             for news in feed[1:]:
-                self.cell(0, 5, f"{'-' * 125}", align="C")
+                self.cell(0, 5, f"{'-' * 125}", align="C", ln=1)
 
-                self.ln()
                 if news["title"]:
                     self.multi_cell(0, 5, f"Title: {news['title']}")
                     self.ln()
@@ -91,8 +90,9 @@ def convertor_to_pdf(data, path, verbose):
     pdf = PDF()
     pdf.alias_nb_pages()
     pdf.add_page()
-    pdf.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
-    pdf.set_font('DejaVu', '', 14)
+    path_to_ttf = Path(Path(__file__).parent, "files_for_pdf", "DejaVuSansCondensed.ttf")
+    pdf.add_font("DejaVu", "", path_to_ttf, uni=True)
+    pdf.set_font("DejaVu", "", 14)
     pdf.set_auto_page_break(True, 10)
     pdf.body(data)
     pdf.output("feed.pdf", "F")
