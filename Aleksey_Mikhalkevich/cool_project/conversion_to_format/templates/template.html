@@ -56,7 +56,7 @@
                 {% endfor %}
             </ul>
             {% else %}
-            <p>Category: {{ news.category }}</p>
+            <p>Categories: {{ news.category }}</p>
             {% endif %}
         </div>
         {% endif %}
@@ -73,11 +73,11 @@
         </div>
         {% endif %}
 
-        {% if news.comments %}
+        {%- if news.comments -%}
         <div>
             <p>Comments: <a href="{{ news.comments }}">{{ news.comments }}</a></p>
         </div>
-        {% endif %}
+        {%- endif -%}
 
         {% if news.media_object %}
         <div>
