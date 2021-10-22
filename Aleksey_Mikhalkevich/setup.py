@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-PROGRAM_VERSION = "3.4.0"
+PROGRAM_VERSION = "3.8.0"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
