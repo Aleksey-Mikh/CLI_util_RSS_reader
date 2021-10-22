@@ -1,3 +1,6 @@
 tmp.py
-data.json
-URL.txt
+URL.py
+.pypirc
+tmp.xml
+__pycache__/
+Aleksey_Mikhalkevich/cool_project/data_storage/storage/

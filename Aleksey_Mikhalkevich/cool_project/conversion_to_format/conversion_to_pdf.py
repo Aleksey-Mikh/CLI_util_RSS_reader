@@ -3,8 +3,7 @@ from pathlib import Path
 from fpdf import FPDF
 
 from cool_project.cervices.print_functions import info_print, error_print
-
-FILE_NAME = "Feed.pdf"
+from cool_project.project_settings import FILE_NAME_PDF
 
 
 class PDF(FPDF):
@@ -161,7 +160,7 @@ def convertor_to_pdf(data, path, verbose):
 
     try:
         pdf.make_dir(path)
-        path = Path(path, FILE_NAME)
+        path = Path(path, FILE_NAME_PDF)
         pdf.output(path, "F")
         info_print(f"A feed in PDF format was saved on the path: {path}")
     except PermissionError:

@@ -6,3 +6,12 @@ HEADERS = {
     "accept": "*/*",
     "Content-Type": "charset=UTF-8"
 }
+
+FILE_NAME_PDF = "feed.pdf"
+FILE_NAME_HTML = "feed.html"
+
+LIST_OF_DATE_FORMATS = [
+            "%a, %d %b %Y %H:%M:%S %z",
+            "%Y%m%d",
+            "%Y-%m-%dT%H:%M:%SZ",
+        ]

@@ -6,13 +6,7 @@ import datetime
 
 from cool_project.cervices.print_functions import error_print, info_print
 from cool_project.cervices.data_output import console_output_feed, console_json_output
-
-
-LIST_OF_DATE_FORMATS = [
-            "%a, %d %b %Y %H:%M:%S %z",
-            "%Y%m%d",
-            "%Y-%m-%dT%H:%M:%SZ",
-        ]
+from cool_project.project_settings import LIST_OF_DATE_FORMATS
 
 
 class StorageManager:

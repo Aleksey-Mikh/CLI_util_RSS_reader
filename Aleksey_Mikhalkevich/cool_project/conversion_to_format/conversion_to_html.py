@@ -3,8 +3,7 @@ from pathlib import Path
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 
 from cool_project.cervices.print_functions import error_print, info_print
-
-FILE_NAME = "feed.html"
+from cool_project.project_settings import FILE_NAME_HTML
 
 
 def make_dir(path):
@@ -87,8 +86,8 @@ def convert_to_html(data, path, verbose):
         info_print("Conversion to HTML ended")
     try:
         make_dir(path)
-        with open(Path(path, FILE_NAME), "w", encoding="utf-8") as file:
+        with open(Path(path, FILE_NAME_HTML), "w", encoding="utf-8") as file:
             file.write(result)
-        info_print(f"A feed in HTML format was saved on the path: {Path(path, FILE_NAME)}")
+        info_print(f"A feed in HTML format was saved on the path: {Path(path, FILE_NAME_HTML)}")
     except Exception:
         error_print("The entered path cannot be created")
