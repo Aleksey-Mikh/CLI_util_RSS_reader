@@ -46,24 +46,23 @@ def raise_exc(exc):
     raise exc
 
 
-def test_intercept_errors(capsys):
+tasks_to_try = (
+    (exceptions.ConnectionError, "[ERROR] Connection error. Please check your URL\n\n"),
+    (exceptions.MissingSchema("Invalid URL 'httpslenta.r/rs': No schema supplied."),
+     "[ERROR] Invalid URL 'httpslenta.r/rs': No schema supplied.\n\n"),
+    (Exception, "[ERROR] Unknown error\n\n")
+)
+
+
+@pytest.mark.parametrize("exc, value", tasks_to_try)
+def test_intercept_errors(capsys, exc, value):
     dec_func = intercept_errors(raise_exc)
     assert dec_func(None)
 
     dec_func = intercept_errors(raise_exc)
-    dec_func(exceptions.ConnectionError)
+    dec_func(exc)
     captured = capsys.readouterr()
-    assert captured.out == "[ERROR] Connection error. Please check your URL\n\n"
-
-    dec_func = intercept_errors(raise_exc)
-    dec_func(exceptions.MissingSchema("Invalid URL 'httpslenta.r/rs': No schema supplied."))
-    captured = capsys.readouterr()
-    assert captured.out == "[ERROR] Invalid URL 'httpslenta.r/rs': No schema supplied.\n\n"
-
-    dec_func = intercept_errors(raise_exc)
-    dec_func(Exception)
-    captured = capsys.readouterr()
-    assert captured.out == "[ERROR] Unknown error\n\n"
+    assert captured.out == value
 
 
 class Verbose:
@@ -132,4 +131,3 @@ def test_decorator_delimiter(capsys):
     last_line = calculate_terminal_size("END")
     assert captured.out == f"{'-' * first_line[0]}{first_line[2]}{'-' * first_line[1]}\n" \
                            f"{'-' * last_line[0]}{last_line[2]}{'-' * last_line[1]}\n"
-
