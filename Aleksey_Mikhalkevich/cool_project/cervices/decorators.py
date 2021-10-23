@@ -34,7 +34,6 @@ def intercept_errors(func):
             error_print(exc)
         except Exception as exc:
             error_print("Unknown error")
-            return None
 
     return wrapper
 
@@ -112,5 +111,3 @@ def decorator_delimiter(start_word=None, end_word=None, calls_stat=False):
         return wrapper
 
     return decorator
-
-
