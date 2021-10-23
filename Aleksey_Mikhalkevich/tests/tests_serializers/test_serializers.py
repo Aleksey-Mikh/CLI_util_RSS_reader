@@ -15,6 +15,7 @@ from cool_project.serializers.serializers import (
 
 @pytest.fixture()
 def news_data():
+    """fixture which read data.xml file"""
     path = Path(Path(__file__).parent, "data.xml")
     with open(path, encoding="utf-8") as file:
         data = file.read()
@@ -23,6 +24,7 @@ def news_data():
 
 @pytest.fixture()
 def news_data_full():
+    """fixture which read full_data.xml file"""
     path = Path(Path(__file__).parent, "full_data.xml")
     with open(path, encoding="utf-8") as file:
         data = file.read()
@@ -31,11 +33,13 @@ def news_data_full():
 
 @pytest.fixture()
 def soup_fix(news_data):
+    """fixture which make soup obj"""
     soup = BeautifulSoup(news_data, "xml")
     return soup
 
 
 def test_get_channel_data(soup_fix):
+    """test for get_channel_data"""
     result_data = get_channel_data(soup_fix, "source")
     correct_result = {
         "channel_title": "Люди Onlíner",
@@ -52,6 +56,7 @@ def test_get_channel_data(soup_fix):
 
 
 def test_percent_generator(capsys):
+    """test for percent_generator"""
     list_items = [1]
     gen = percent_generator(list_items, 5)
     list_items.append(2)
@@ -84,6 +89,7 @@ def test_percent_generator(capsys):
                           ("", False, "source", False)]
                          )
 def test_checking_the_source_is_the_rss(soup, verbose, source, correct_res, request, capsys):
+    """test for checking_the_source_is_the_rss"""
     if soup:
         # This function dynamically runs a named fixture function.
         soup = request.getfixturevalue(soup)
@@ -98,11 +104,13 @@ def test_checking_the_source_is_the_rss(soup, verbose, source, correct_res, requ
                           (5, 10, 5)]
                          )
 def test_check_limit(limit, count_news, correct_res):
+    """test for check_limit"""
     result = check_limit(limit, count_news)
     assert result == correct_res
 
 
 def test_serialization_item(soup_fix, news_data_full):
+    """test for serialization_item"""
     item = soup_fix.find("item")
     data = serialization_item(item)
     correct_res = {
@@ -161,8 +169,8 @@ def test_serialization_item(soup_fix, news_data_full):
     assert data_full == correct_res_full
 
 
-
 def test_serialization_data(news_data, capsys):
+    """test for serialization_data"""
     data = serialization_data(news_data, 3, True, "source")
     capsys.readouterr()
     correct_res = [
