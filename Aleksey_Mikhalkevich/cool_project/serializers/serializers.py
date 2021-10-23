@@ -5,7 +5,7 @@ from cool_project.cervices.print_functions import info_print, warning_print
 
 def serialization_data(data, limit, verbose, source):
     """
-    Function that processes the data with the soup class,
+    The function that processes the data with the soup class,
     gets the channel name and dictionaries with the news content
     and forms a list of it all.
 

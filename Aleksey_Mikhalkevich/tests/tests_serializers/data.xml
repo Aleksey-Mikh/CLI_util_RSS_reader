@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:media="http://search.yahoo.com/mrss/"
+>
+
+    <channel>
+        <title>Люди Onlíner</title>
+        <link>https://people.onliner.by/</link>
+        <description>Люди Onlíner</description>
+        <pubDate>Sat, 23 Oct 2021 17:51:11 +0300</pubDate>
+
+        <generator>Onliner</generator>
+        <language>ru</language>
+
+        <image>
+            <url>https://content.onliner.by/pic/logo.png</url>
+            <width>181</width>
+            <height>53</height>
+            <title>Люди Onlíner</title>
+            <link>https://people.onliner.by/</link>
+        </image>
+
+        <item>
+            <title><![CDATA[Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов]]></title>
+            <link>https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov</link>
+            <pubDate>Sat, 23 Oct 2021 17:51:11 +0300</pubDate>
+            <dc:creator>Onliner</dc:creator>
+            <category><![CDATA[Здоровье]]></category>
+
+            <guid isPermaLink="false">https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov
+            </guid>
+            <description><![CDATA[<p><a href="https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov"><img src="https://content.onliner.by/news/thumbnail/5a7aa9c81d307b0ddc03a0f10746bffe.jpeg" alt="" /></a></
+p><p>По всей стране в медицинских учреждениях перепрофилировано чуть более 40% коечного фонда. Такую цифру <a href="https://t.me/minzdravbelarus" target="_blank">привел</a> глава Министерства здравоохранения Дмитрий Пиневич, отметив, что это позволяет и дальше оказывать плановую помощь жителям Беларуси.</p><p><a href="https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov">Читать далее…</a></p>]]></description>
+
+            <media:thumbnail url="https://content.onliner.by/news/thumbnail/5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"/>
+        </item>
+
+
+    </channel>
+</rss>
