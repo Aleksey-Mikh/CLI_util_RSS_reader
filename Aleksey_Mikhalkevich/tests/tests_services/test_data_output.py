@@ -55,6 +55,11 @@ DATA = [
 
 
 def calculate_terminal_size(word):
+    """
+    calculated terminal size
+    :param word: a word which will be printed in center of a separator
+    :return: left_columns_count, right_columns_count, word
+    """
     columns = shutil.get_terminal_size().columns
 
     if word is None:
@@ -69,6 +74,7 @@ def calculate_terminal_size(word):
 
 
 def test_console_output_feed(capsys):
+    """test for console_output_feed function"""
     console_output_feed(DATA)
     captured = capsys.readouterr()
 
@@ -103,6 +109,7 @@ def test_console_output_feed(capsys):
 
 
 def test_output_feed(capsys):
+    """test for output_feed function"""
     output_feed(DATA[1])
     captured = capsys.readouterr()
 
@@ -128,6 +135,7 @@ def test_output_feed(capsys):
                           ("comments", "\n")]
                          )
 def test_line_break(capsys, word, res):
+    """test for line_break function"""
     line_break(word)
     captured = capsys.readouterr()
     assert captured.out == res
@@ -145,7 +153,8 @@ def test_rebuild_value(ls, res):
 
 
 def test_console_json_output(capsys):
-    console_json_output([DATA[0],DATA[1]])
+    """test for console_json_output function"""
+    console_json_output([DATA[0], DATA[1]])
     captured = capsys.readouterr()
     output = "[\n" \
              "    {\n" \

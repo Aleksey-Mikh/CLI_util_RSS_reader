@@ -14,17 +14,20 @@ from cool_project.cervices.decorators import (
 
 
 class Limit:
+    """simple class for test decorator"""
 
     def __init__(self, limit):
         self.limit = limit
 
 
 def function_for_test(value):
+    """simple function for test decorator"""
     limit = Limit(value)
     return limit
 
 
 def test_check_limit_type_value(capsys):
+    """test for error_print"""
     dec_func = check_limit_type_value(function_for_test)
     assert dec_func(5).limit == 5
 
@@ -41,6 +44,7 @@ def test_check_limit_type_value(capsys):
 
 
 def raise_exc(exc):
+    """simple function for test decorator"""
     if exc is None:
         return True
     raise exc
@@ -56,6 +60,7 @@ tasks_to_try = (
 
 @pytest.mark.parametrize("exc, value", tasks_to_try)
 def test_intercept_errors(capsys, exc, value):
+    """test for error_print"""
     dec_func = intercept_errors(raise_exc)
     assert dec_func(None)
 
@@ -66,16 +71,19 @@ def test_intercept_errors(capsys, exc, value):
 
 
 class Verbose:
+    """simple class for test decorator"""
 
     def __init__(self, verbose):
         self.verbose = verbose
 
 
 def function_for_test_2(value):
+    """simple function for test decorator"""
     return value
 
 
 def test_verbose_information_about_start_scrapping(capsys):
+    """test for verbose_information_about_start_scrapping"""
     dec_func = verbose_information_about_start_scrapping(function_for_test_2)
     res = dec_func(Verbose(True))
     captured = capsys.readouterr()
@@ -88,6 +96,11 @@ def test_verbose_information_about_start_scrapping(capsys):
 
 
 def calculate_terminal_size(word):
+    """
+    calculated terminal size
+    :param word: a word which will be printed in center of a separator
+    :return: left_columns_count, right_columns_count, word
+    """
     columns = shutil.get_terminal_size().columns
 
     if word is None:
@@ -102,6 +115,7 @@ def calculate_terminal_size(word):
 
 
 def test_get_data_for_print_delimiter():
+    """test for get_data_for_print_delimiter"""
     word = "FINISH HIM!"
     res = get_data_for_print_delimiter(word)
     assert res == calculate_terminal_size(word)
@@ -112,6 +126,7 @@ def test_get_data_for_print_delimiter():
 
 
 def test_decorator_delimiter(capsys):
+    """test for decorator_delimiter"""
     dec_func = decorator_delimiter("Fight")
     dec_func = dec_func(function_for_test_2)
     dec_func("POP")
