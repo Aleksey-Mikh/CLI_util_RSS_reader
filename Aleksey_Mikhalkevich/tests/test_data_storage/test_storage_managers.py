@@ -15,6 +15,7 @@ from cool_project.data_storage.storage_managers import (
 
 @pytest.fixture()
 def init_SM():
+    """init StorageManager"""
     data = ["data"]
     st_manager = SM("sour.ce", verbose=True, data=data)
     return st_manager
@@ -22,6 +23,7 @@ def init_SM():
 
 @pytest.fixture()
 def init_DataManagerInStorageAfterParsing():
+    """init DataManagerInStorageAfterParsing"""
     data = [
         {
             "channel_title": "Люди Onlíner",
@@ -53,6 +55,7 @@ def init_DataManagerInStorageAfterParsing():
 
 @pytest.fixture()
 def init_FindManagerWhenEnterDateAndSource():
+    """init FindManagerWhenEnterDateAndSource"""
     st_manager = FindManagerWhenEnterDateAndSource(
         "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1
     )
@@ -61,6 +64,7 @@ def init_FindManagerWhenEnterDateAndSource():
 
 @pytest.fixture()
 def init_FindManagerWhenEnterDate():
+    """init FindManagerWhenEnterDate"""
     st_manager = FindManagerWhenEnterDate(
         "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1
     )
@@ -77,6 +81,7 @@ def del_dir():
 
 @pytest.fixture()
 def path_to_storage():
+    """A fixture that return path to storage"""
     path = Path(__file__).parent.parent.parent
     path = Path(path, "cool_project", "data_storage", "storage")
     return path
@@ -90,34 +95,39 @@ def del_file_txt():
     Path.unlink(path)
 
 
-def test_StorageManager_mehod_get_abspath_to_storage(init_SM, path_to_storage):
+def test_StorageManager_method_get_abspath_to_storage(init_SM, path_to_storage):
+    """test for StorageManager method get_abspath_to_storage"""
     st_manger = init_SM
     path = st_manger._get_abspath_to_storage()
     assert path == path_to_storage
 
 
-def test_StoragerManager_mehod_write_to_storage(del_file_txt, init_SM):
+def test_StoragerManager_method_write_to_storage(del_file_txt, init_SM):
+    """test for StoragerManager method write_to_storage"""
     path = Path(Path(__file__).parent, "feed.txt")
     st_manager = init_SM
     st_manager.write_to_storage(path, 'data')
     assert Path(path).exists()
 
 
-def test_StorageManager_mehod_read_from_storage(init_SM):
+def test_StorageManager_method_read_from_storage(init_SM):
+    """test for StorageManager method read_from_storage"""
     path = Path(Path(__file__).parent, "test_data.json")
     st_manager = init_SM
     result = st_manager.read_from_storage(path)
     assert result == [{"test": "data"}]
 
 
-def test_StorageManager_mehod_make_dir(init_SM, del_dir):
+def test_StorageManager_method_make_dir(init_SM, del_dir):
+    """test for StorageManager method make_dir"""
     path = del_dir
     st_manager = init_SM
     st_manager.make_dir(path)
     assert Path(path).exists()
 
 
-def test_StorageManager_mehod_path_is_exists(init_SM):
+def test_StorageManager_method_path_is_exists(init_SM):
+    """test for StorageManager method path_is_exists"""
     path = Path(__file__)
     st_manager = init_SM
     assert st_manager.path_is_exists(path)
@@ -126,7 +136,8 @@ def test_StorageManager_mehod_path_is_exists(init_SM):
     assert not st_manager.path_is_exists(path)
 
 
-def test_StorageManager_mehod_get_path(init_SM):
+def test_StorageManager_method_get_path(init_SM):
+    """test for StorageManager method get_path"""
     expected = Path(Path(__file__), "check")
     st_manager = init_SM
     actual = st_manager.get_path(Path(__file__), "check")
@@ -139,22 +150,25 @@ def test_StorageManager_mehod_get_path(init_SM):
                           ("20211024", "2021-10-24"),
                           ("22024", None)]
                          )
-def test_StorageManager_mehod_get_date_in_correct_format(init_SM, date_str, correct_res):
+def test_StorageManager_method_get_date_in_correct_format(init_SM, date_str, correct_res):
+    """test for StorageManager method get_date_in_correct_format"""
     st_manager = init_SM
     actual = st_manager.get_date_in_correct_format(date_str)
     assert actual == correct_res
 
 
-def test_DataManagerInStorageAfterParsing_mehod_get_file_name(init_DataManagerInStorageAfterParsing):
+def test_DataManagerInStorageAfterParsing_method_get_file_name(init_DataManagerInStorageAfterParsing):
+    """test for DataManagerInStorageAfterParsing method get_file_name"""
     st_manager = init_DataManagerInStorageAfterParsing
     actual = st_manager.get_file_name("2021-10-22")
     expected = "2021-10-22_sour_ce.json"
     assert actual == expected
 
 
-def test_DataManagerInStorageAfterParsing_mehod_make_dir_by_key(
+def test_DataManagerInStorageAfterParsing_method_make_dir_by_key(
         init_DataManagerInStorageAfterParsing, path_to_storage
 ):
+    """test for DataManagerInStorageAfterParsing method make_dir_by_key"""
     st_manager = init_DataManagerInStorageAfterParsing
     data = {"1000-10-23": "data"}
     expected = Path(path_to_storage, "1000-10", "1000-10-23")
@@ -163,9 +177,10 @@ def test_DataManagerInStorageAfterParsing_mehod_make_dir_by_key(
     shutil.rmtree(Path(path_to_storage, "1000-10"))
 
 
-def test_DataManagerInStorageAfterParsing_mehod_control_of_exist(
+def test_DataManagerInStorageAfterParsing_method_control_of_exist(
         init_DataManagerInStorageAfterParsing, path_to_storage
 ):
+    """test for DataManagerInStorageAfterParsing method control_of_exist"""
     st_manager = init_DataManagerInStorageAfterParsing
     data = {"1000-10-23": [{"data": "data"}]}
     channel_data = [{"channel_data": "data"}]
@@ -180,7 +195,10 @@ def test_DataManagerInStorageAfterParsing_mehod_control_of_exist(
     shutil.rmtree(Path(path_to_storage, "1000-10"))
 
 
-def test_DataManagerInStorageAfterParsing_mehod_split_data_by_news(init_DataManagerInStorageAfterParsing, capsys):
+def test_DataManagerInStorageAfterParsing_method_split_data_by_news(
+        init_DataManagerInStorageAfterParsing, capsys
+):
+    """test for DataManagerInStorageAfterParsing method split_data_by_news"""
     st_manager = init_DataManagerInStorageAfterParsing
     channel_data, dict_for_data_saving = st_manager.split_data_by_news()
     channel_data_correct = [{
@@ -237,13 +255,17 @@ def test_DataManagerInStorageAfterParsing_mehod_split_data_by_news(init_DataMana
     assert actual is None
 
 
-def test_FindManagerWhenEnterDateAndSource_mehod_get_file_name(init_FindManagerWhenEnterDateAndSource):
+def test_FindManagerWhenEnterDateAndSource_method_get_file_name(init_FindManagerWhenEnterDateAndSource):
+    """test for FindManagerWhenEnterDateAndSource method get_file_name"""
     st_manager = init_FindManagerWhenEnterDateAndSource
     file_name = st_manager.get_file_name()
     assert file_name == "1000-10-23_sour_ce.json"
 
 
-def test_FindManagerWhenEnterDateAndSource_mehod_news_was_not_founded(init_FindManagerWhenEnterDateAndSource, capsys):
+def test_FindManagerWhenEnterDateAndSource_method_news_was_not_founded(
+        init_FindManagerWhenEnterDateAndSource, capsys
+):
+    """test for FindManagerWhenEnterDateAndSource method news_was_not_founded"""
     st_manager = init_FindManagerWhenEnterDateAndSource
     st_manager.news_was_not_founded()
     captured = capsys.readouterr()
@@ -271,9 +293,10 @@ def calculate_terminal_size(word):
     return left_columns_count, right_columns_count, word
 
 
-def test_FindManagerWhenEnterDateAndSource_mehod_data_output(
+def test_FindManagerWhenEnterDateAndSource_method_data_output(
         init_FindManagerWhenEnterDateAndSource, capsys
 ):
+    """test for FindManagerWhenEnterDateAndSource method data_output"""
     st_manager = init_FindManagerWhenEnterDateAndSource
     data = [{"data": "LOL"}]
     st_manager.data_output(data)
@@ -325,9 +348,10 @@ def test_FindManagerWhenEnterDateAndSource_mehod_data_output(
                            f"{'-' * last_line[0]}{last_line[2]}{'-' * last_line[1]}\n\n"
 
 
-def test_FindManagerWhenEnterDateAndSource_mehod_slice_content_by_limit(
+def test_FindManagerWhenEnterDateAndSource_method_slice_content_by_limit(
         init_FindManagerWhenEnterDateAndSource, capsys
 ):
+    """test for FindManagerWhenEnterDateAndSource method slice_content_by_limit"""
     st_manager = init_FindManagerWhenEnterDateAndSource
     data = [
         {"channel_title": "Люди Onlíner"},
@@ -357,14 +381,16 @@ def test_FindManagerWhenEnterDateAndSource_mehod_slice_content_by_limit(
                            " to 0, news cannot be printed.\n\n"
 
 
-def test_FindManagerWhenEnterDate_mehod_get_content_by_paths(init_FindManagerWhenEnterDate):
+def test_FindManagerWhenEnterDate_method_get_content_by_paths(init_FindManagerWhenEnterDate):
+    """test for FindManagerWhenEnterDate method get_content_by_paths"""
     st_manager = init_FindManagerWhenEnterDate
     path = Path(Path(__file__).parent, "test_data.json")
     list_of_content = st_manager.get_content_by_paths([path])
     assert list_of_content == [[{'test': 'data'}]]
 
 
-def test_FindManagerWhenEnterDate_mehod_slice_content_by_limit(init_FindManagerWhenEnterDate, capsys):
+def test_FindManagerWhenEnterDate_method_slice_content_by_limit(init_FindManagerWhenEnterDate, capsys):
+    """test for FindManagerWhenEnterDate method slice_content_by_limit"""
     st_manager = init_FindManagerWhenEnterDate
     data = [
         {"source": "Люди Onlíner"},
@@ -398,7 +424,8 @@ def test_FindManagerWhenEnterDate_mehod_slice_content_by_limit(init_FindManagerW
                            "equal to 0, news cannot be printed.\n\n"
 
 
-def test_FindManagerWhenEnterDate_mehod_news_was_not_founded(init_FindManagerWhenEnterDate, capsys):
+def test_FindManagerWhenEnterDate_method_news_was_not_founded(init_FindManagerWhenEnterDate, capsys):
+    """test for FindManagerWhenEnterDate method news_was_not_founded"""
     st_manager = init_FindManagerWhenEnterDate
     st_manager._news_was_not_founded("1000-10-23")
     captured = capsys.readouterr()
@@ -406,9 +433,10 @@ def test_FindManagerWhenEnterDate_mehod_news_was_not_founded(init_FindManagerWhe
                            "this date - 1000-10-23\n\n"
 
 
-def test_FindManagerWhenEnterDate_mehod_data_output(
+def test_FindManagerWhenEnterDate_method_data_output(
         init_FindManagerWhenEnterDate, capsys
 ):
+    """test for FindManagerWhenEnterDate method data_output"""
     st_manager = init_FindManagerWhenEnterDate
     data = [{"data": "LOL"}]
     st_manager.data_output(data)
@@ -460,9 +488,10 @@ def test_FindManagerWhenEnterDate_mehod_data_output(
                            f"{'-' * last_line[0]}{last_line[2]}{'-' * last_line[1]}\n\n"
 
 
-def test_FindManagerWhenEnterDate_mehod_check_news_by_date(
+def test_FindManagerWhenEnterDate_method_check_news_by_date(
         init_FindManagerWhenEnterDate, capsys
 ):
+    """test for FindManagerWhenEnterDate method check_news_by_date"""
     st_manager = init_FindManagerWhenEnterDate
     st_manager.check_news_by_date()
     captured = capsys.readouterr()
