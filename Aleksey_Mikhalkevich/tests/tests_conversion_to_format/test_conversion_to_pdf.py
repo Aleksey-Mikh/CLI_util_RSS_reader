@@ -1,5 +1,4 @@
 from pathlib import Path
-from unittest import mock
 
 import pytest
 
@@ -10,16 +9,15 @@ from cool_project.conversion_to_format.conversion_to_pdf import (
 
 
 @pytest.fixture()
-def get_dir():
-    """A fixture that creates a directory and deletes it"""
+def del_dir():
+    """A fixture that deletes a directory"""
     path = Path(Path(__file__).parent, "test_dir")
-    PDF.make_dir(path)
-    yield Path.exists(path)
+    yield path
     Path.rmdir(path)
 
 
 @pytest.fixture()
-def get_file():
+def del_file_pdf():
     """A fixture that deletes file"""
     path = Path(Path(__file__).parent, "feed.pdf")
     yield
@@ -54,10 +52,11 @@ def test_PDF_method_is_list(obj, correct_res):
     assert pdf.is_list(obj) == correct_res
 
 
-def test_PDF_method_make_dir(get_dir):
+def test_PDF_method_make_dir(del_dir):
     """test PDF method make dir"""
-    actual = get_dir
-    assert actual
+    path = del_dir
+    PDF.make_dir(path)
+    assert Path(path).exists()
 
 
 def test_PDF_method_footer(init_pdf):
@@ -111,9 +110,8 @@ def test_PDF_method_get_item(init_pdf):
     pdf._get_item(data)
 
 
-def test_convertor_to_pdf(get_file, capsys):
+def test_convertor_to_pdf(del_file_pdf, capsys):
     """test for convertor_to_pdf"""
-    path = get_file
     data = [
         {
             "channel_title": "channel_title",
@@ -142,7 +140,7 @@ def test_convertor_to_pdf(get_file, capsys):
                            f"[INFO] A feed in PDF format was saved on the path: " \
                            f"{Path(Path(__file__).parent, 'feed.pdf')}\n\n"
 
-    convertor_to_pdf(data, Path(__file__).parent, True)
+    convertor_to_pdf(data, Path(Path(__file__).parent, "pa:th"), True)
     captured = capsys.readouterr()
     assert captured.out == f"[INFO] Fonts have been received\n\n" \
                            f"[INFO] PDF generation started\n\n" \

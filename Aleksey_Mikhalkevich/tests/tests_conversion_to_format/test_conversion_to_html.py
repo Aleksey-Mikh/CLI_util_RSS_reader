@@ -12,26 +12,26 @@ from cool_project.conversion_to_format.conversion_to_html import (
 
 
 @pytest.fixture()
-def get_dir():
-    """A fixture that creates a directory and deletes it"""
+def del_dir():
+    """A fixture that deletes a directory"""
     path = Path(Path(__file__).parent, "test_dir")
-    make_dir(path)
-    yield Path.exists(path)
+    yield path
     Path.rmdir(path)
 
 
 @pytest.fixture()
-def get_file():
+def del_file_html():
     """A fixture that deletes file"""
     path = Path(Path(__file__).parent, "feed.html")
     yield
     Path.unlink(path)
 
 
-def test_make_dir(get_dir):
+def test_make_dir(del_dir):
     """test for make_dir"""
-    actual = get_dir
-    assert actual
+    path = del_dir
+    make_dir(path)
+    assert Path(path).exists()
 
 
 @pytest.mark.parametrize("obj, correct_res",
@@ -62,7 +62,7 @@ def test_get_content(data, correct_res):
     assert content == expected
 
 
-def test_convert_to_html(get_file, capsys):
+def test_convert_to_html(del_file_html, capsys):
     """test for convert_to_htm"""
     data = "data"
     path = Path(__file__).parent

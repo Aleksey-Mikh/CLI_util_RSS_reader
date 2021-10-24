@@ -31,13 +31,6 @@ def news_data_full():
     return data
 
 
-@pytest.fixture()
-def soup_fix(news_data):
-    """fixture which make soup obj"""
-    soup = BeautifulSoup(news_data, "xml")
-    return soup
-
-
 def test_get_channel_data(soup_fix):
     """test for get_channel_data"""
     result_data = get_channel_data(soup_fix, "source")
