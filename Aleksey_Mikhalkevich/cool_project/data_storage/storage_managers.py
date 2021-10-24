@@ -229,7 +229,7 @@ class DataManagerInStorageAfterParsing(StorageManager):
 
             if date_in_correct_format is None:
                 error_print(f"The site {self.source} uses an unsupported date format. Storage data has failed.")
-                if self.verbose is not None:
+                if self.verbose:
                     info_print("Supported date format:\n\t{}".format('\n\t'.join(LIST_OF_DATE_FORMATS)))
                 return None
 
