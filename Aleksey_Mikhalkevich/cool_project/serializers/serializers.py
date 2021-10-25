@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from cool_project.cervices.print_functions import info_print, warning_print
+from cool_project.cervices.print_functions import info_print, warning_print, error_print
 
 
 def serialization_data(data, limit, verbose, source):
@@ -102,7 +102,8 @@ def checking_the_source_is_the_rss(soup, verbose, source):
 
 def check_limit(limit, count_news):
     """
-    Checked limit and if limit is None or limit > count_news
+    Checked limit and if limit is None or limit > count_news,
+    and check if limit <= 0,
     redefined limit to count_news.
 
     :param limit: limit of the news
@@ -111,6 +112,10 @@ def check_limit(limit, count_news):
     """
     if limit is None or limit > count_news:
         limit = count_news
+    elif limit <= 0:
+        error_print("The limit is less than or equal to 0, news cannot be printed.")
+        return False
+
     return limit
 
 

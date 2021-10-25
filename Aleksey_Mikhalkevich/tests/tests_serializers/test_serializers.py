@@ -94,11 +94,13 @@ def test_checking_the_source_is_the_rss(soup, verbose, source, correct_res, requ
 @pytest.mark.parametrize("limit, count_news, correct_res",
                          [(None, 10, 10),
                           (15, 10, 10),
+                          (-1, 10, False),
                           (5, 10, 5)]
                          )
-def test_check_limit(limit, count_news, correct_res):
+def test_check_limit(limit, count_news, correct_res, capsys):
     """test for check_limit"""
     result = check_limit(limit, count_news)
+    capsys.readouterr()
     assert result == correct_res
 
 

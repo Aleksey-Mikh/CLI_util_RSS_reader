@@ -1,4 +1,6 @@
 import argparse
+import sys
+
 import requests
 
 
@@ -21,11 +23,11 @@ class RSSParser:
     the user and the site that program are trying to parse.
     """
 
-    def __init__(self):
+    def __init__(self, args_for_argparse):
         """
         Init class and init argparse
         """
-        argparse_params = self._init_argparse()
+        argparse_params = self._init_argparse(args_for_argparse)
         self.source = argparse_params.source
         self.limit = argparse_params.limit
         self.json = argparse_params.json
@@ -37,7 +39,7 @@ class RSSParser:
 
     @staticmethod
     @check_limit_type_value
-    def _init_argparse():
+    def _init_argparse(args_for_argparse):
         """
         Initialization argparse and check if --version option
         is specified app should just print its version and stop.
@@ -54,7 +56,7 @@ class RSSParser:
         parser.add_argument("--to-html", help="This argument receives the path where new file will be saved.")
         parser.add_argument("--to-pdf", help="This argument receives the path where new file will be saved.")
 
-        args, unknown = parser.parse_known_args()
+        args, unknown = parser.parse_known_args(args=args_for_argparse)
 
         # If --version option is specified app should just print its version and stop.
         if "—version" in unknown:
@@ -162,7 +164,7 @@ class RSSParser:
             else:
                 error_print("Error seems to have been caused by the client. Check url which you give.")
         elif 500 <= status_code <= 599:
-            error_print("The server failed to fulfil a request")
+            error_print("The server failed to execute a request")
         else:
             error_print("Error which can't be processed because status code don't defined")
 
@@ -178,7 +180,7 @@ def start_parsing(reader):
 
 def main():
     """Init reader"""
-    reader = RSSParser()
+    reader = RSSParser(sys.argv[1:])
     start_parsing(reader)
 
 
