@@ -5,7 +5,9 @@ from pathlib import Path
 import datetime
 
 from cool_project.cervices.print_functions import error_print, info_print
-from cool_project.cervices.data_output import console_output_feed, console_json_output
+from cool_project.cervices.data_output import (
+    console_output_feed, console_json_output
+)
 from cool_project.project_settings import LIST_OF_DATE_FORMATS
 
 
@@ -109,7 +111,9 @@ class StorageManager:
         """
         for date_format in LIST_OF_DATE_FORMATS:
             try:
-                date_time_obj = datetime.datetime.strptime(date_str, date_format)
+                date_time_obj = datetime.datetime.strptime(
+                    date_str, date_format
+                )
                 return str(date_time_obj.date())
             except ValueError:
                 # if the correct format wasn't received,
@@ -182,9 +186,13 @@ class DataManagerInStorageAfterParsing(StorageManager):
             path = self.get_path(path, date[:7], date, file_name)
 
             if self.path_is_exists(path):
-                self._write_or_update_data(path, channel_data, list_of_news, "update")
+                self._write_or_update_data(
+                    path, channel_data, list_of_news, "update"
+                )
             else:
-                self._write_or_update_data(path, channel_data, list_of_news, "write")
+                self._write_or_update_data(
+                    path, channel_data, list_of_news, "write"
+                )
 
     def _write_or_update_data(self, path, channel_data, list_of_news, flag):
         """
@@ -207,7 +215,9 @@ class DataManagerInStorageAfterParsing(StorageManager):
                     data_to_file.append(news)
 
             # data_from_file[:1] - channel data
-            data_to_file = data_from_file[:1] + data_to_file + data_from_file[1:]
+            data_to_file = (
+                    data_from_file[:1] + data_to_file + data_from_file[1:]
+            )
             self.write_to_storage(path, data_to_file)
         elif flag == "write":
             data_to_file = channel_data + list_of_news
@@ -227,15 +237,25 @@ class DataManagerInStorageAfterParsing(StorageManager):
         channel_data, data = self.data[:1], self.data[1:]
 
         for news in data:
-            date_in_correct_format = self.get_date_in_correct_format(news["date"])
+            date_in_correct_format = self.get_date_in_correct_format(
+                news["date"]
+            )
 
             if date_in_correct_format is None:
-                error_print(f"The site {self.source} uses an unsupported date format. Storage data has failed.")
+                error_print(
+                    f"The site {self.source} uses an unsupported"
+                    f" date format. Storage data has failed."
+                )
                 if self.verbose:
-                    info_print("Supported date format:\n\t{}".format('\n\t'.join(LIST_OF_DATE_FORMATS)))
+                    info_print(
+                        "Supported date format:\n\t"
+                        "{}".format('\n\t'.join(LIST_OF_DATE_FORMATS))
+                    )
                 return None
 
-            dict_for_data_saving[date_in_correct_format] = dict_for_data_saving.get(date_in_correct_format, []) + [news]
+            dict_for_data_saving[date_in_correct_format] = dict_for_data_saving.get(
+                date_in_correct_format, []
+            ) + [news]
 
         return channel_data, dict_for_data_saving
 
@@ -293,7 +313,10 @@ class FindManagerWhenEnterDate(StorageManager):
                 )
             return list_of_content
         if self.limit <= 0:
-            error_print("The limit is less than or equal to 0, news cannot be printed.")
+            error_print(
+                "The limit is less than or equal to 0, "
+                "news cannot be printed."
+            )
             return False
 
         limit = self.limit
@@ -333,10 +356,15 @@ class FindManagerWhenEnterDate(StorageManager):
         date_in_correct_format = self.get_date_in_correct_format(self.date)
 
         if date_in_correct_format is None:
-            error_print(f"{self.date!r} is an incorrect date. Please try to enter the date in a correct format")
+            error_print(
+                f"{self.date!r} is an incorrect date. "
+                f"Please try to enter the date in a correct format"
+            )
             return False
 
-        path = self.get_path(self._get_abspath_to_storage(), date_in_correct_format[:7])
+        path = self.get_path(
+            self._get_abspath_to_storage(), date_in_correct_format[:7]
+        )
 
         if self.path_is_exists(path):
             path = self.get_path(path, date_in_correct_format)
@@ -409,7 +437,10 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
         :param json_flag: --json value
         :param limit: --limit value
         """
-        super().__init__(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit, colorize=colorize)
+        super().__init__(
+            source, date=date, verbose=verbose,
+            json_flag=json_flag, limit=limit, colorize=colorize
+        )
 
     def get_file_name(self):
         """
@@ -425,7 +456,10 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
         """
         Error output when news by date and source is not found.
         """
-        error_print(f"No news was founded for this date and: {self.date}, and this source: {self.source}")
+        error_print(
+            f"No news was founded for this date and: "
+            f"{self.date}, and this source: {self.source}"
+        )
 
     def data_output(self, data):
         """
@@ -451,11 +485,17 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
         :return: a list of dictionary with news
         """
         if self.verbose:
-            info_print(f"The news was searched in the storage by date: {self.date}, and source: {self.source}")
+            info_print(
+                f"The news was searched in the storage by date: "
+                f"{self.date}, and source: {self.source}"
+            )
         if self.limit is None:
             return data
         if self.limit <= 0:
-            error_print("The limit is less than or equal to 0, news cannot be printed.")
+            error_print(
+                "The limit is less than or equal to 0, "
+                "news cannot be printed."
+            )
             return False
 
         limit = self.limit

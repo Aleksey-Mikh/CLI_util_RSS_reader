@@ -43,7 +43,9 @@ class PDF(FPDF):
             self.multi_cell(0, 5, f"Description: {news['description']}")
             self.ln()
         if news["more_description"]:
-            self.multi_cell(0, 5, f"More description: {news['more_description']}")
+            self.multi_cell(
+                0, 5, f"More description: {news['more_description']}"
+            )
             self.ln()
         if news["comments"]:
             self.multi_cell(0, 5, f"Comments: {news['comments']}")
@@ -84,7 +86,10 @@ class PDF(FPDF):
             data = [data]
 
         for feed in data:
-            self.cell(0, 5, f'Channel title: {feed[0]["channel_title"]}', align="C", ln=1)
+            self.cell(
+                0, 5, f'Channel title: {feed[0]["channel_title"]}',
+                align="C", ln=1
+            )
             self.cell(0, 5, f'Source: {feed[0]["source"]}', align="C", ln=1)
 
             for news in feed[1:]:
@@ -143,7 +148,9 @@ def convertor_to_pdf(data, path, verbose):
     pdf = PDF()
     pdf.alias_nb_pages()
     pdf.add_page()
-    path_to_ttf = Path(Path(__file__).parent, "files_for_pdf", "DejaVuSansCondensed.ttf")
+    path_to_ttf = Path(
+        Path(__file__).parent, "files_for_pdf", "DejaVuSansCondensed.ttf"
+    )
     pdf.add_font("DejaVu", "", path_to_ttf, uni=True)
 
     if verbose:
@@ -164,7 +171,9 @@ def convertor_to_pdf(data, path, verbose):
         pdf.output(path, "F")
         info_print(f"A feed in PDF format was saved on the path: {path}")
     except PermissionError:
-        error_print(f"it is not possible to save a PDF file on this path: {path}."
-                    f" Such file already exists or cannot access the folder.")
+        error_print(
+            f"it is not possible to save a PDF file on this path: {path}."
+            f" Such file already exists or cannot access the folder."
+        )
     except Exception:
         error_print("The entered path cannot be created")

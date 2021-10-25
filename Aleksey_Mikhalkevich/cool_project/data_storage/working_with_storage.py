@@ -9,6 +9,14 @@ from cool_project.conversion_to_format.conversion_to_pdf import convertor_to_pdf
 
 
 def interface_to_convert(data, to_html, to_pdf, verbose):
+    """
+    Interface to convert data to some format.
+
+    :param data: a data to convert
+    :param to_html: a flag
+    :param to_pdf: a flag
+    :param verbose: a flag
+    """
     if to_html is not None:
         convert_to_html(data, to_html, verbose)
 
@@ -42,7 +50,9 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
     """
     # after parsing, writing a data to the storage
     if data is not None and source is not None:
-        st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose, colorize=kwargs["colorize"])
+        st_manager = DataManagerInStorageAfterParsing(
+            source, data=data, verbose=verbose, colorize=kwargs["colorize"]
+        )
         response_from_split_data_by_news = st_manager.split_data_by_news()
 
         if response_from_split_data_by_news is None:
@@ -52,13 +62,16 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
         st_manager.make_dir_by_key(dict_for_data_saving)
         st_manager.control_of_exist(dict_for_data_saving, channel_data)
 
-        interface_to_convert(data, kwargs["to_html"], kwargs["to_pdf"], verbose)
+        interface_to_convert(
+            data, kwargs["to_html"], kwargs["to_pdf"], verbose
+        )
 
     # if user enter only a date
     elif date is not None and source is None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
         st_manager = FindManagerWhenEnterDate(
-            source, date=date, verbose=verbose, json_flag=json_flag, limit=limit, colorize=kwargs["colorize"]
+            source, date=date, verbose=verbose, json_flag=json_flag,
+            limit=limit, colorize=kwargs["colorize"]
         )
         paths = st_manager.check_news_by_date()
 
@@ -67,19 +80,24 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
 
         list_of_content = st_manager.get_content_by_paths(paths)
         if verbose:
-            info_print("The news has been successfully extracted from the storage")
+            info_print(
+                "The news has been successfully extracted from the storage"
+            )
         list_of_content = st_manager.slice_content_by_limit(list_of_content)
         if not list_of_content:
             return False
         st_manager.data_output(list_of_content)
 
-        interface_to_convert(list_of_content, kwargs["to_html"], kwargs["to_pdf"], verbose)
+        interface_to_convert(
+            list_of_content, kwargs["to_html"], kwargs["to_pdf"], verbose
+        )
 
     # if user enter a date and a source
     elif date is not None and source is not None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
         st_manager = FindManagerWhenEnterDateAndSource(
-            source, date=date, verbose=verbose, json_flag=json_flag, limit=limit, colorize=kwargs["colorize"]
+            source, date=date, verbose=verbose, json_flag=json_flag,
+            limit=limit, colorize=kwargs["colorize"]
         )
         paths = st_manager.check_news_by_date()
         st_manager.date = st_manager.get_date_in_correct_format(date)
@@ -95,11 +113,15 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
 
         data = st_manager.read_from_storage(path[0])
         if verbose:
-            info_print("The news has been successfully extracted from the storage")
+            info_print(
+                "The news has been successfully extracted from the storage"
+            )
 
         data = st_manager.slice_content_by_limit(data)
         if not data:
             return False
         st_manager.data_output(data)
 
-        interface_to_convert(data, kwargs["to_html"], kwargs["to_pdf"], verbose)
+        interface_to_convert(
+            data, kwargs["to_html"], kwargs["to_pdf"], verbose
+        )

@@ -88,6 +88,9 @@ def convert_to_html(data, path, verbose):
         make_dir(path)
         with open(Path(path, FILE_NAME_HTML), "w", encoding="utf-8") as file:
             file.write(result)
-        info_print(f"A feed in HTML format was saved on the path: {Path(path, FILE_NAME_HTML)}")
+        info_print(
+            f"A feed in HTML format was saved on the path: "
+            f"{Path(path, FILE_NAME_HTML)}"
+        )
     except Exception:
         error_print("The entered path cannot be created")
