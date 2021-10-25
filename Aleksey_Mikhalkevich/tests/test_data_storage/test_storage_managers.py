@@ -29,9 +29,11 @@ def init_DataManagerInStorageAfterParsing():
             "source": "source"
         },
         {
-            "title": "Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов",
+            "title": "Пиневич: 40% коечного фонда "
+                     "перепрофилировано под ковидных пациентов",
             "date": "Sat, 23 Oct 2021 17:51:11 +0300",
-            "link": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+            "link": "https://people.onliner.by/2021/10/23/"
+                    "pereprofilirovano-pod-kovidnyx-pacientov",
             "author": None,
             "category": ["Здоровье"],
             "description": 'По всей стране в медицинских учреждениях '
@@ -43,12 +45,16 @@ def init_DataManagerInStorageAfterParsing():
                            'жителям Беларуси.Читать далее…',
             "more_description": None,
             "comments": None,
-            "media_object": ["https://content.onliner.by/news/thumbnail/5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
-            "extra_links": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+            "media_object": ["https://content.onliner.by/news/thumbnail/"
+                             "5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
+            "extra_links": "https://people.onliner.by/2021/10/23/"
+                           "pereprofilirovano-pod-kovidnyx-pacientov",
             "source_feed": None,
         }
     ]
-    st_manager = DataManagerInStorageAfterParsing("sour.ce", verbose=True, data=data, colorize=False)
+    st_manager = DataManagerInStorageAfterParsing(
+        "sour.ce", verbose=True, data=data, colorize=False
+    )
     return st_manager
 
 
@@ -56,7 +62,8 @@ def init_DataManagerInStorageAfterParsing():
 def init_FindManagerWhenEnterDateAndSource():
     """init FindManagerWhenEnterDateAndSource"""
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=1, colorize=False
     )
     return st_manager
 
@@ -65,7 +72,8 @@ def init_FindManagerWhenEnterDateAndSource():
 def init_FindManagerWhenEnterDate():
     """init FindManagerWhenEnterDate"""
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=1, colorize=False
     )
     return st_manager
 
@@ -94,7 +102,9 @@ def del_file_txt():
     Path.unlink(path)
 
 
-def test_StorageManager_method_get_abspath_to_storage(init_SM, path_to_storage):
+def test_StorageManager_method_get_abspath_to_storage(
+        init_SM, path_to_storage
+):
     """test for StorageManager method get_abspath_to_storage"""
     st_manger = init_SM
     path = st_manger._get_abspath_to_storage()
@@ -149,14 +159,18 @@ def test_StorageManager_method_get_path(init_SM):
                           ("20211024", "2021-10-24"),
                           ("22024", None)]
                          )
-def test_StorageManager_method_get_date_in_correct_format(init_SM, date_str, correct_res):
+def test_StorageManager_method_get_date_in_correct_format(
+        init_SM, date_str, correct_res
+):
     """test for StorageManager method get_date_in_correct_format"""
     st_manager = init_SM
     actual = st_manager.get_date_in_correct_format(date_str)
     assert actual == correct_res
 
 
-def test_DataManagerInStorageAfterParsing_method_get_file_name(init_DataManagerInStorageAfterParsing):
+def test_DataManagerInStorageAfterParsing_method_get_file_name(
+        init_DataManagerInStorageAfterParsing
+):
     """test for DataManagerInStorageAfterParsing method get_file_name"""
     st_manager = init_DataManagerInStorageAfterParsing
     actual = st_manager.get_file_name("2021-10-22")
@@ -207,28 +221,35 @@ def test_DataManagerInStorageAfterParsing_method_split_data_by_news(
     dict_for_data_saving_correct = {
         "2021-10-23": [
             {
-                "title": "Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов",
+                "title": "Пиневич: 40% коечного фонда перепрофилировано"
+                         " под ковидных пациентов",
                 "date": "Sat, 23 Oct 2021 17:51:11 +0300",
-                "link": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+                "link": "https://people.onliner.by/2021/10/23/"
+                        "pereprofilirovano-pod-kovidnyx-pacientov",
                 "author": None,
                 "category": ["Здоровье"],
                 "description": 'По всей стране в медицинских учреждениях '
-                               'перепрофилировано чуть более 40% коечного фонда. '
-                               'Такую цифру привел глава Министерства '
+                               'перепрофилировано чуть более 40% '
+                               'коечного фонда. Такую цифру '
+                               'привел глава Министерства '
                                'здравоохранения Дмитрий Пиневич, '
                                'отметив, что это позволяет и '
                                'дальше оказывать плановую помощь '
                                'жителям Беларуси.Читать далее…',
                 "more_description": None,
                 "comments": None,
-                "media_object": ["https://content.onliner.by/news/thumbnail/5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
-                "extra_links": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+                "media_object": ["https://content.onliner.by/news/thumbnail/"
+                                 "5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
+                "extra_links": "https://people.onliner.by/2021/10/23/"
+                               "pereprofilirovano-pod-kovidnyx-pacientov",
                 "source_feed": None,
             }
         ]
     }
     captured = capsys.readouterr()
-    assert (channel_data, dict_for_data_saving) == (channel_data_correct, dict_for_data_saving_correct)
+    assert (channel_data, dict_for_data_saving) == (
+        channel_data_correct, dict_for_data_saving_correct
+    )
     assert captured.out == ""
 
     data = [
@@ -237,13 +258,17 @@ def test_DataManagerInStorageAfterParsing_method_split_data_by_news(
             "source": "source"
         },
         {
-            "title": "Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов",
+            "title": "Пиневич: 40% коечного фонда перепрофилировано "
+                     "под ковидных пациентов",
             "date": "Sat, 23 Oct 021 17:51:11 +0300",
-            "link": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+            "link": "https://people.onliner.by/2021/10/23/"
+                    "pereprofilirovano-pod-kovidnyx-pacientov",
             "author": None,
         }
     ]
-    st_manager = DataManagerInStorageAfterParsing("sour.ce", verbose=True, data=data, colorize=False)
+    st_manager = DataManagerInStorageAfterParsing(
+        "sour.ce", verbose=True, data=data, colorize=False
+    )
     actual = st_manager.split_data_by_news()
     captured = capsys.readouterr()
 
@@ -254,7 +279,9 @@ def test_DataManagerInStorageAfterParsing_method_split_data_by_news(
     assert actual is None
 
 
-def test_FindManagerWhenEnterDateAndSource_method_get_file_name(init_FindManagerWhenEnterDateAndSource):
+def test_FindManagerWhenEnterDateAndSource_method_get_file_name(
+        init_FindManagerWhenEnterDateAndSource
+):
     """test for FindManagerWhenEnterDateAndSource method get_file_name"""
     st_manager = init_FindManagerWhenEnterDateAndSource
     file_name = st_manager.get_file_name()
@@ -264,7 +291,9 @@ def test_FindManagerWhenEnterDateAndSource_method_get_file_name(init_FindManager
 def test_FindManagerWhenEnterDateAndSource_method_news_was_not_founded(
         init_FindManagerWhenEnterDateAndSource, capsys
 ):
-    """test for FindManagerWhenEnterDateAndSource method news_was_not_founded"""
+    """
+    test for FindManagerWhenEnterDateAndSource method news_was_not_founded
+    """
     st_manager = init_FindManagerWhenEnterDateAndSource
     st_manager.news_was_not_founded()
     captured = capsys.readouterr()
@@ -308,7 +337,8 @@ def test_FindManagerWhenEnterDateAndSource_method_data_output(
                            "]\n"
 
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=None, limit=1, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=None, limit=1, colorize=False
     )
     data = [
         {
@@ -333,10 +363,12 @@ def test_FindManagerWhenEnterDateAndSource_method_data_output(
     captured = capsys.readouterr()
     first_line_1 = calculate_terminal_size("News 1")
     last_line = calculate_terminal_size(None)
-    assert captured.out == f"[INFO] News will be printed in a standard format\n\n" \
+    assert captured.out == f"[INFO] News will be printed " \
+                           f"in a standard format\n\n" \
                            f"\n\nFeed source: source\n" \
                            f"Feed: channel_title\n\n" \
-                           f"{'-' * first_line_1[0]}{first_line_1[2]}{'-' * first_line_1[1]}\n" \
+                           f"{'-' * first_line_1[0]}{first_line_1[2]}" \
+                           f"{'-' * first_line_1[1]}\n" \
                            f"Title: title\n" \
                            f"Date: date\n" \
                            f"Link: link\n" \
@@ -344,13 +376,16 @@ def test_FindManagerWhenEnterDateAndSource_method_data_output(
                            f"Description: description\n\n" \
                            f"Media Object: media_object\n" \
                            f"Extra Links: extra_links\n" \
-                           f"{'-' * last_line[0]}{last_line[2]}{'-' * last_line[1]}\n\n"
+                           f"{'-' * last_line[0]}{last_line[2]}" \
+                           f"{'-' * last_line[1]}\n\n"
 
 
 def test_FindManagerWhenEnterDateAndSource_method_slice_content_by_limit(
         init_FindManagerWhenEnterDateAndSource, capsys
 ):
-    """test for FindManagerWhenEnterDateAndSource method slice_content_by_limit"""
+    """
+    test for FindManagerWhenEnterDateAndSource method slice_content_by_limit
+    """
     st_manager = init_FindManagerWhenEnterDateAndSource
     data = [
         {"channel_title": "Люди Onlíner"},
@@ -362,14 +397,16 @@ def test_FindManagerWhenEnterDateAndSource_method_slice_content_by_limit(
     assert actual == data[:-1]
 
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=None, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=None, colorize=False
     )
     actual = st_manager.slice_content_by_limit(data)
     capsys.readouterr()
     assert actual == data
 
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=-3, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=-3, colorize=False
     )
     st_manager.slice_content_by_limit(data)
     captured = capsys.readouterr()
@@ -380,7 +417,9 @@ def test_FindManagerWhenEnterDateAndSource_method_slice_content_by_limit(
                            " to 0, news cannot be printed.\n\n"
 
 
-def test_FindManagerWhenEnterDate_method_get_content_by_paths(init_FindManagerWhenEnterDate):
+def test_FindManagerWhenEnterDate_method_get_content_by_paths(
+        init_FindManagerWhenEnterDate
+):
     """test for FindManagerWhenEnterDate method get_content_by_paths"""
     st_manager = init_FindManagerWhenEnterDate
     path = Path(Path(__file__).parent, "test_data.json")
@@ -388,7 +427,9 @@ def test_FindManagerWhenEnterDate_method_get_content_by_paths(init_FindManagerWh
     assert list_of_content == [[{'test': 'data'}]]
 
 
-def test_FindManagerWhenEnterDate_method_slice_content_by_limit(init_FindManagerWhenEnterDate, capsys):
+def test_FindManagerWhenEnterDate_method_slice_content_by_limit(
+        init_FindManagerWhenEnterDate, capsys
+):
     """test for FindManagerWhenEnterDate method slice_content_by_limit"""
     st_manager = init_FindManagerWhenEnterDate
     data = [
@@ -401,21 +442,24 @@ def test_FindManagerWhenEnterDate_method_slice_content_by_limit(init_FindManager
     assert actual == [data[:-1]]
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=None, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=None, colorize=False
     )
     actual = st_manager.slice_content_by_limit([data])
     capsys.readouterr()
     assert actual == [data]
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=3, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=3, colorize=False
     )
     actual = st_manager.slice_content_by_limit([data])
     capsys.readouterr()
     assert actual == [data]
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=-1, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=True, limit=-1, colorize=False
     )
     st_manager.slice_content_by_limit([data])
     captured = capsys.readouterr()
@@ -423,7 +467,9 @@ def test_FindManagerWhenEnterDate_method_slice_content_by_limit(init_FindManager
                            "equal to 0, news cannot be printed.\n\n"
 
 
-def test_FindManagerWhenEnterDate_method_news_was_not_founded(init_FindManagerWhenEnterDate, capsys):
+def test_FindManagerWhenEnterDate_method_news_was_not_founded(
+        init_FindManagerWhenEnterDate, capsys
+):
     """test for FindManagerWhenEnterDate method news_was_not_founded"""
     st_manager = init_FindManagerWhenEnterDate
     st_manager._news_was_not_founded("1000-10-23")
@@ -440,7 +486,8 @@ def test_FindManagerWhenEnterDate_method_data_output(
     data = [{"data": "LOL"}]
     st_manager.data_output(data)
     captured = capsys.readouterr()
-    assert captured.out == "[INFO] News will be printed in JSON format\n\n" \
+    assert captured.out == "[INFO] News will be printed in " \
+                           "JSON format\n\n" \
                            "[\n" \
                            "    {\n" \
                            "        \"data\": \"LOL\"\n" \
@@ -448,7 +495,8 @@ def test_FindManagerWhenEnterDate_method_data_output(
                            "]\n"
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=None, limit=1, colorize=False
+        "sour.ce", verbose=True, date="1000-10-23",
+        json_flag=None, limit=1, colorize=False
     )
     data = [
         {
@@ -473,10 +521,12 @@ def test_FindManagerWhenEnterDate_method_data_output(
     captured = capsys.readouterr()
     first_line_1 = calculate_terminal_size("News 2")
     last_line = calculate_terminal_size(None)
-    assert captured.out == f"[INFO] News will be printed in a standard format\n\n" \
+    assert captured.out == f"[INFO] News will be printed " \
+                           f"in a standard format\n\n" \
                            f"\n\nFeed source: source\n" \
                            f"Feed: channel_title\n\n" \
-                           f"{'-' * first_line_1[0]}{first_line_1[2]}{'-' * first_line_1[1]}\n" \
+                           f"{'-' * first_line_1[0]}{first_line_1[2]}" \
+                           f"{'-' * first_line_1[1]}\n" \
                            f"Title: title\n" \
                            f"Date: date\n" \
                            f"Link: link\n" \
@@ -484,7 +534,8 @@ def test_FindManagerWhenEnterDate_method_data_output(
                            f"Description: description\n\n" \
                            f"Media Object: media_object\n" \
                            f"Extra Links: extra_links\n" \
-                           f"{'-' * last_line[0]}{last_line[2]}{'-' * last_line[1]}\n\n"
+                           f"{'-' * last_line[0]}{last_line[2]}" \
+                           f"{'-' * last_line[1]}\n\n"
 
 
 def test_FindManagerWhenEnterDate_method_check_news_by_date(
@@ -499,7 +550,8 @@ def test_FindManagerWhenEnterDate_method_check_news_by_date(
                            "in a correct format\n\n"
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="10001023", json_flag=True, limit=1, colorize=False
+        "sour.ce", verbose=True, date="10001023",
+        json_flag=True, limit=1, colorize=False
     )
     st_manager.check_news_by_date()
     captured = capsys.readouterr()
@@ -522,5 +574,3 @@ def test_FindManagerWhenEnterDate_method_check_news_by_date(
     assert res == []
 
     shutil.rmtree(Path(st_manager._get_abspath_to_storage(), "1000-10"))
-
-

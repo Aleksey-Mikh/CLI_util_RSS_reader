@@ -7,5 +7,3 @@ def soup_fix(news_data):
     """fixture which make soup obj"""
     soup = BeautifulSoup(news_data, "xml")
     return soup
-
-

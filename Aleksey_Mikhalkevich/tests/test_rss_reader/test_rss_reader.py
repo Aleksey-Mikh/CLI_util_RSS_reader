@@ -5,7 +5,8 @@ from cool_project.project_settings import PROGRAM_VERSION
 
 
 @pytest.mark.parametrize("args, expected",
-                         [("source --json --verbose --limit=2 --date=2020 --to-html=path --to-pdf=path",
+                         [("source --json --verbose --limit=2 "
+                           "--date=2020 --to-html=path --to-pdf=path",
                            ("source", True, True, 2, "2020", "path", "path")),
                           (" ",
                            (None, False, False, None, None, None, None)),
@@ -15,25 +16,32 @@ from cool_project.project_settings import PROGRAM_VERSION
                            (None, True, True, 2, "2020", None, None)),
                           ("source --json --verbose --limit=2 --date=2020",
                            ("source", True, True, 2, "2020", None, None)),
-                          ("source --verbose --limit=2 --date=2020 --to-html=path",
+                          ("source --verbose --limit=2 "
+                           "--date=2020 --to-html=path",
                            ("source", False, True, 2, "2020", "path", None)),
-                          ("source --json --verbose --limit=2 --date=2020 --to-pdf=path",
+                          ("source --json --verbose --limit=2 "
+                           "--date=2020 --to-pdf=path",
                            ("source", True, True, 2, "2020", None, "path")),
-                          ("--json --verbose --limit=2 --date=2020 --to-html=path --to-pdf=path",
+                          ("--json --verbose --limit=2 --date=2020 "
+                           "--to-html=path --to-pdf=path",
                            (None, True, True, 2, "2020", "path", "path")),
                           ]
                          )
 def test_RSSParser_method_init_argparse(args, expected):
     """test for method init_argparse"""
     parser = RSSParser(args.split())
-    actual = (parser.source, parser.json, parser.verbose, parser.limit, parser.date, parser.to_html, parser.to_pdf)
+    actual = (
+        parser.source, parser.json, parser.verbose,
+        parser.limit, parser.date, parser.to_html, parser.to_pdf
+    )
     assert actual == expected
 
 
 @pytest.mark.parametrize("args, expected",
                          [("--version",
                            f"Version {PROGRAM_VERSION}\n"),
-                          ("source --json --verbose --limit=2 --date=2020 --to-html=path --to-pdf=path --version",
+                          ("source --json --verbose --limit=2 --date=2020 "
+                           "--to-html=path --to-pdf=path --version",
                            f"Version {PROGRAM_VERSION}\n"),
                           ]
                          )
@@ -76,7 +84,9 @@ def test_RSSParser_method_isvalid(capsys):
     actual = parser._isvalid(Response(200))
     assert actual
 
-    parser = RSSParser("https://people.onliner.by/feed --limit=1 --verbose".split())
+    parser = RSSParser(
+        "https://people.onliner.by/feed --limit=1 --verbose".split()
+    )
     parser._isvalid(None)
     captured = capsys.readouterr()
     assert captured.out == "[INFO] The program stop running with error," \
@@ -131,12 +141,16 @@ def test_RSSParser_method_check_date_and_source(capsys):
 
 def test_RSSParser_method_print_data_in_console(capsys):
     """test for method print_data_in_console"""
-    parser = RSSParser("https://people.onliner.by/feed --limit=1 --json --verbose".split())
+    parser = RSSParser(
+        "https://people.onliner.by/feed --limit=1 --json --verbose".split()
+    )
     parser.serializable_data = None
     actual = parser.print_data_in_console()
     assert not actual
 
-    parser = RSSParser("https://people.onliner.by/feed --limit=1 --json --verbose".split())
+    parser = RSSParser(
+        "https://people.onliner.by/feed --limit=1 --json --verbose".split()
+    )
     parser.serializable_data = [{"data": "data"}]
     parser.print_data_in_console()
     captured = capsys.readouterr()

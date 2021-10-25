@@ -81,7 +81,9 @@ def test_percent_generator(capsys):
                           ("", True, "source", False),
                           ("", False, "source", False)]
                          )
-def test_checking_the_source_is_the_rss(soup, verbose, source, correct_res, request, capsys):
+def test_checking_the_source_is_the_rss(
+        soup, verbose, source, correct_res, request, capsys
+):
     """test for checking_the_source_is_the_rss"""
     if soup:
         # This function dynamically runs a named fixture function.
@@ -109,9 +111,11 @@ def test_serialization_item(soup_fix, news_data_full):
     item = soup_fix.find("item")
     data = serialization_item(item)
     correct_res = {
-        "title": "Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов",
+        "title": "Пиневич: 40% коечного фонда "
+                 "перепрофилировано под ковидных пациентов",
         "date": "Sat, 23 Oct 2021 17:51:11 +0300",
-        "link": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+        "link": "https://people.onliner.by/2021/10/23/"
+                "pereprofilirovano-pod-kovidnyx-pacientov",
         "author": None,
         "category": ["Здоровье"],
         "description": 'По всей стране в медицинских учреждениях '
@@ -123,8 +127,10 @@ def test_serialization_item(soup_fix, news_data_full):
                        'жителям Беларуси.Читать далее…',
         "more_description": None,
         "comments": None,
-        "media_object": ["https://content.onliner.by/news/thumbnail/5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
-        "extra_links": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+        "media_object": ["https://content.onliner.by/news/thumbnail/"
+                         "5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
+        "extra_links": "https://people.onliner.by/2021/10/23/"
+                       "pereprofilirovano-pod-kovidnyx-pacientov",
         "source_feed": None,
     }
     assert data == correct_res
@@ -149,16 +155,19 @@ def test_serialization_item(soup_fix, news_data_full):
     item_full = soup.find("item")
     data_full = serialization_item(item_full)
     correct_res_full = {
-        "title": "Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов",
+        "title": "Пиневич: 40% коечного фонда перепрофилировано "
+                 "под ковидных пациентов",
         "date": "Sat, 23 Oct 2021 17:51:11 +0300",
-        "link": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+        "link": "https://people.onliner.by/2021/10/23/"
+                "pereprofilirovano-pod-kovidnyx-pacientov",
         "author": "Onliner",
         "category": ["Здоровье"],
         "description": 'passs',
         "more_description": "Marissa talks to long.",
         "comments": "passs",
         "media_object": "passs",
-        "extra_links": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+        "extra_links": "https://people.onliner.by/2021/10/23/"
+                       "pereprofilirovano-pod-kovidnyx-pacientov",
         "source_feed": ['passs', 'passs'],
     }
     assert data_full == correct_res_full
@@ -174,9 +183,11 @@ def test_serialization_data(news_data, capsys):
             "source": "source"
         },
         {
-            "title": "Пиневич: 40% коечного фонда перепрофилировано под ковидных пациентов",
+            "title": "Пиневич: 40% коечного фонда "
+                     "перепрофилировано под ковидных пациентов",
             "date": "Sat, 23 Oct 2021 17:51:11 +0300",
-            "link": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+            "link": "https://people.onliner.by/2021/10/23/"
+                    "pereprofilirovano-pod-kovidnyx-pacientov",
             "author": None,
             "category": ["Здоровье"],
             "description": 'По всей стране в медицинских учреждениях '
@@ -188,8 +199,10 @@ def test_serialization_data(news_data, capsys):
                            'жителям Беларуси.Читать далее…',
             "more_description": None,
             "comments": None,
-            "media_object": ["https://content.onliner.by/news/thumbnail/5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
-            "extra_links": "https://people.onliner.by/2021/10/23/pereprofilirovano-pod-kovidnyx-pacientov",
+            "media_object": ["https://content.onliner.by/news/thumbnail/"
+                             "5a7aa9c81d307b0ddc03a0f10746bffe.jpeg"],
+            "extra_links": "https://people.onliner.by/2021/10/23/"
+                           "pereprofilirovano-pod-kovidnyx-pacientov",
             "source_feed": None,
         }
     ]

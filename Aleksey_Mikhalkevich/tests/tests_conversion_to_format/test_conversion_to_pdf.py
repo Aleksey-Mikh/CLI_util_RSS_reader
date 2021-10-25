@@ -137,5 +137,6 @@ def test_convertor_to_pdf(del_file_pdf, capsys):
     assert captured.out == f"[INFO] Fonts have been received\n\n" \
                            f"[INFO] PDF generation started\n\n" \
                            f"[INFO] PDF has been generated\n\n" \
-                           f"[INFO] A feed in PDF format was saved on the path: " \
+                           f"[INFO] A feed in PDF format was saved " \
+                           f"on the path: " \
                            f"{Path(Path(__file__).parent, 'feed.pdf')}\n\n"
