@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-PROGRAM_VERSION = "4.0.0"
+PROGRAM_VERSION = "4.5.0"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -23,6 +23,9 @@ setup(
         'lxml',
         'Jinja2',
         'fpdf',
+        'pytest',
+        'pytest-cov',
+        'colorama',
     ],
     entry_points={
         "console_scripts": [
