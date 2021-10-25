@@ -139,10 +139,3 @@ def test_convertor_to_pdf(del_file_pdf, capsys):
                            f"[INFO] PDF has been generated\n\n" \
                            f"[INFO] A feed in PDF format was saved on the path: " \
                            f"{Path(Path(__file__).parent, 'feed.pdf')}\n\n"
-
-    convertor_to_pdf(data, Path(Path(__file__).parent, "pa:th"), True)
-    captured = capsys.readouterr()
-    assert captured.out == f"[INFO] Fonts have been received\n\n" \
-                           f"[INFO] PDF generation started\n\n" \
-                           f"[INFO] PDF has been generated\n\n" \
-                           f"[ERROR] The entered path cannot be created\n\n"

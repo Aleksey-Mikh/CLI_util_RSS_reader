@@ -154,6 +154,7 @@ class DataManagerInStorageAfterParsing(StorageManager):
 
         :param data_dict: dictionary with news
         """
+        self.make_dir(self._get_abspath_to_storage())
         for key in data_dict.keys():
             path = self._get_abspath_to_storage()
 

@@ -72,11 +72,3 @@ def test_convert_to_html(del_file_html, capsys):
                            f"[INFO] Conversion to HTML ended\n\n" \
                            f"[INFO] A feed in HTML format was saved on the path: " \
                            f"{Path(path, 'feed.html')}\n\n"
-
-    data = "data"
-    path = Path(Path(__file__).parent, "da:ta")
-    convert_to_html(data, path, True)
-    captured = capsys.readouterr()
-    assert captured.out == f"[INFO] Conversion to HTML started\n\n" \
-                           f"[INFO] Conversion to HTML ended\n\n" \
-                           f"[ERROR] The entered path cannot be created\n\n"
