@@ -2,7 +2,9 @@ from requests import exceptions
 import shutil
 from math import ceil
 
-from cool_project.cervices.print_functions import info_print, warning_print, error_print
+from cool_project.cervices.print_functions import (
+    info_print, warning_print, error_print
+)
 
 
 def check_limit_type_value(func):
@@ -79,12 +81,15 @@ def get_data_for_print_delimiter(word):
 
 def decorator_delimiter(start_word=None, end_word=None, calls_stat=False):
     """
-    Decorator which print separate line with start_word and end_word value,
+    Decorator which print separate line with
+    start_word and end_word value,
     if calls_stat is True also print how much times function was called,
     if start_word or end_word value is None value will not be print.
 
-    :param start_word: a word which will be printed in center of a start separator
-    :param end_word: a word which will be printed in center of a end separator
+    :param start_word: a word which will be printed
+    in center of a start separator
+    :param end_word: a word which will be printed
+    in center of a end separator
     :param calls_stat: print or not how much times function was called
     """
     count_of_calls = 1
@@ -101,10 +106,14 @@ def decorator_delimiter(start_word=None, end_word=None, calls_stat=False):
                     count_of_calls += 1
 
             left_columns_count, right_columns_count, word = get_data_for_print_delimiter(word)
-            print(f"{'-' * left_columns_count}{word}{'-' * right_columns_count}")
+            print(
+                f"{'-' * left_columns_count}{word}{'-' * right_columns_count}"
+            )
             result = func(*args, **kwargs)
             left_columns_count, right_columns_count, word = get_data_for_print_delimiter(end_word)
-            print(f"{'-' * left_columns_count}{word}{'-' * right_columns_count}")
+            print(
+                f"{'-' * left_columns_count}{word}{'-' * right_columns_count}"
+            )
 
             return result
 

@@ -17,8 +17,15 @@ def console_output_feed(news, colorize):
     channel_data = news[0]
     if colorize:
         init(autoreset=True, strip=False)
-        print(Style.BRIGHT + Fore.GREEN + f"Feed source:", f"{channel_data['source']}")
-        print(Style.BRIGHT + Fore.GREEN + f"Feed:", Fore.MAGENTA + f"{channel_data['channel_title']}" + Style.DIM, end="\n\n")
+        print(
+            Style.BRIGHT + Fore.GREEN + f"Feed source:",
+            f"{channel_data['source']}"
+        )
+        print(
+            Style.BRIGHT + Fore.GREEN + f"Feed:",
+            Fore.MAGENTA + f"{channel_data['channel_title']}" + Style.DIM,
+            end="\n\n"
+        )
     else:
         print(f"Feed source: {channel_data['source']}")
         print(f"Feed: {channel_data['channel_title']}", end="\n\n")
@@ -53,21 +60,28 @@ def output_feed(news, colorize):
             if colorize:
                 if key == "description" or key == "more_description":
                     print(
-                        Style.BRIGHT + Fore.GREEN + f"{key.title().replace('_', ' ')}:",
+                        Style.BRIGHT + Fore.GREEN +
+                        f"{key.title().replace('_', ' ')}:",
                         f"{value.replace('&nbsp', ' ')}"
                     )
                 elif key == "title":
                     print(
-                        Style.BRIGHT + Fore.RED + f"{key.title().replace('_', ' ')}:",
-                        Style.BRIGHT + Fore.YELLOW + f"{value.replace('&nbsp', ' ')}"
+                        Style.BRIGHT + Fore.RED +
+                        f"{key.title().replace('_', ' ')}:",
+                        Style.BRIGHT + Fore.YELLOW +
+                        f"{value.replace('&nbsp', ' ')}"
                     )
                 else:
                     print(
-                        Style.BRIGHT + Fore.CYAN + f"{key.title().replace('_', ' ')}:",
+                        Style.BRIGHT + Fore.CYAN +
+                        f"{key.title().replace('_', ' ')}:",
                         f"{value.replace('&nbsp', ' ')}"
                     )
             else:
-                print(f"{key.title().replace('_', ' ')}: {value.replace('&nbsp', ' ')}")
+                print(
+                    f"{key.title().replace('_', ' ')}: "
+                    f"{value.replace('&nbsp', ' ')}"
+                )
 
 
 def line_break(key):
