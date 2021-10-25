@@ -1,7 +1,6 @@
 import json
 
-import colorama
-from colorama import init, Fore, Style
+from colorama import init, Fore, Style, deinit
 
 from cool_project.cervices.decorators import decorator_delimiter
 
@@ -17,7 +16,7 @@ def console_output_feed(news, colorize):
 
     channel_data = news[0]
     if colorize:
-        init(autoreset=True)
+        init(autoreset=True, strip=False)
         print(Style.BRIGHT + Fore.GREEN + f"Feed source:", f"{channel_data['source']}")
         print(Style.BRIGHT + Fore.GREEN + f"Feed:", Fore.MAGENTA + f"{channel_data['channel_title']}" + Style.DIM, end="\n\n")
     else:
@@ -27,6 +26,9 @@ def console_output_feed(news, colorize):
     for item in news[1:]:
         output_feed(item, colorize)
         print()  # line break for correct output
+
+    if colorize:
+        deinit()
 
 
 @decorator_delimiter("News", calls_stat=True)
@@ -49,7 +51,6 @@ def output_feed(news, colorize):
             line_break(key)
 
             if colorize:
-                init(autoreset=True)
                 if key == "description" or key == "more_description":
                     print(
                         Style.BRIGHT + Fore.GREEN + f"{key.title().replace('_', ' ')}:",
