@@ -4,7 +4,9 @@ import sys
 import requests
 
 
-from cool_project.cervices.data_output import console_output_feed, console_json_output
+from cool_project.cervices.data_output import (
+    console_output_feed, console_json_output
+)
 from cool_project.cervices.decorators import (
     check_limit_type_value,
     intercept_errors,
@@ -47,22 +49,50 @@ class RSSParser:
 
         :return: args of argparse
         """
-        parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
-        parser.add_argument("source", nargs="?", default=None, type=str, help="Print version info")
-        parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
-        parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
-        parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
-        parser.add_argument("--limit", help="Limit news topics if this parameter provided")
-        parser.add_argument("--date", help="Take a date in %Y%m%d format. Example: 20191206")
-        parser.add_argument("--to-html", help="This argument receives the path where new HTML file will be saved.")
-        parser.add_argument("--to-pdf", help="This argument receives the path where new PDF file will be saved.")
+        parser = argparse.ArgumentParser(
+            description="Pure Python command-line RSS reader."
+        )
         parser.add_argument(
-            "--colorize", action="store_true", help="That will print the result of the utility in colorized mode."
+            "source", nargs="?", default=None,
+            type=str, help="Print version info"
+        )
+        parser.add_argument(
+            "--version", action="version",
+            version=f"Version {PROGRAM_VERSION}", help="RSS URL"
+        )
+        parser.add_argument(
+            "--json", action="store_true",
+            help="Print result as JSON in stdout"
+        )
+        parser.add_argument(
+            "--verbose", action="store_true",
+            help="Outputs verbose status messages"
+        )
+        parser.add_argument(
+            "--limit", help="Limit news topics if this parameter provided"
+        )
+        parser.add_argument(
+            "--date", help="Take a date in %Y%m%d format. Example: 20191206"
+        )
+        parser.add_argument(
+            "--to-html",
+            help="This argument receives the path "
+                 "where new HTML file will be saved."
+        )
+        parser.add_argument(
+            "--to-pdf",
+            help="This argument receives the path "
+                 "where new PDF file will be saved."
+        )
+        parser.add_argument(
+            "--colorize", action="store_true",
+            help="That will print the result of the utility in colorized mode."
         )
 
         args, unknown = parser.parse_known_args(args=args_for_argparse)
 
-        # If --version option is specified app should just print its version and stop.
+        # If --version option is specified app should
+        # just print its version and stop.
         if "—version" in unknown:
             parser.parse_args(["--version"])
         else:
@@ -77,7 +107,9 @@ class RSSParser:
         response = self._get_html()
 
         if self._isvalid(response):
-            serializable_data = serialization_data(response.text, self.limit, self.verbose, self.source)
+            serializable_data = serialization_data(
+                response.text, self.limit, self.verbose, self.source
+            )
 
             if serializable_data is None:
                 error_print("Data wasn't received")
@@ -90,7 +122,10 @@ class RSSParser:
         """Check if response is valid"""
         if response is None:
             if self.verbose:
-                info_print(f"The program stop running with error, when it try to get information from {self.source!r}")
+                info_print(
+                    f"The program stop running with error, when it "
+                    f"try to get information from {self.source!r}"
+                )
             return False
 
         elif response.status_code == 200:
@@ -111,7 +146,8 @@ class RSSParser:
         elif self.date is not None:
             storage_control(
                 date=self.date, source=self.source, verbose=self.verbose,
-                json=self.json, limit=self.limit, to_html=self.to_html, to_pdf=self.to_pdf, colorize=self.colorize
+                json=self.json, limit=self.limit, to_html=self.to_html,
+                to_pdf=self.to_pdf, colorize=self.colorize
             )
         elif self.source is None:
             if self.verbose:
@@ -139,7 +175,8 @@ class RSSParser:
 
         storage_control(
             data=self.serializable_data, source=self.source,
-            verbose=self.verbose, to_html=self.to_html, to_pdf=self.to_pdf, colorize=self.colorize
+            verbose=self.verbose, to_html=self.to_html,
+            to_pdf=self.to_pdf, colorize=self.colorize
         )
 
     @intercept_errors
@@ -166,11 +203,17 @@ class RSSParser:
             if status_code == 404:
                 error_print(f"{self.source!r}: 404 Page Not Found")
             else:
-                error_print("Error seems to have been caused by the client. Check url which you give.")
+                error_print(
+                    "Error seems to have been caused "
+                    "by the client. Check url which you give."
+                )
         elif 500 <= status_code <= 599:
             error_print("The server failed to execute a request")
         else:
-            error_print("Error which can't be processed because status code don't defined")
+            error_print(
+                "Error which can't be processed because "
+                "status code don't defined"
+            )
 
 
 @decorator_delimiter("Start Program", "Stop Program")

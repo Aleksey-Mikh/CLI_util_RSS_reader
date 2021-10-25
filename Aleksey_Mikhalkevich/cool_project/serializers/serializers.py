@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 
-from cool_project.cervices.print_functions import info_print, warning_print, error_print
+from cool_project.cervices.print_functions import (
+    info_print, warning_print, error_print
+)
 
 
 def serialization_data(data, limit, verbose, source):
@@ -18,7 +20,9 @@ def serialization_data(data, limit, verbose, source):
     list_items = list()
 
     soup = BeautifulSoup(data, "xml")
-    if not checking_the_source_is_the_rss(soup, verbose, source):  # finish work if get False
+
+    # finish work if get False
+    if not checking_the_source_is_the_rss(soup, verbose, source):
         return None
 
     channel = get_channel_data(soup, source)
@@ -93,10 +97,14 @@ def checking_the_source_is_the_rss(soup, verbose, source):
         soup.find("rss").get("version")
         return True
     except AttributeError:
-        warning_print(f"{source!r} isn't a RSS. Please try to enter a correct URL")
+        warning_print(
+            f"{source!r} isn't a RSS. Please try to enter a correct URL"
+        )
         if verbose:
-            info_print("If your sure that this URL is correct, please check your URL, "
-                       "maybe it use old rss version and parser don't understand it.")
+            info_print(
+                "If your sure that this URL is correct, please check your URL,"
+                " maybe it use old rss version and parser don't understand it."
+            )
         return False
 
 
@@ -113,7 +121,9 @@ def check_limit(limit, count_news):
     if limit is None or limit > count_news:
         limit = count_news
     elif limit <= 0:
-        error_print("The limit is less than or equal to 0, news cannot be printed.")
+        error_print(
+            "The limit is less than or equal to 0, news cannot be printed."
+        )
         return False
 
     return limit
@@ -212,7 +222,8 @@ def serialization_item(item):
     except AttributeError:
         source_url = ""
 
-    # if description text in rss equals content_encoded text - getting rid of duplicates
+    # if description text in rss equals content_encoded
+    # text - getting rid of duplicates
     if description == content_encoded:
         content_encoded = None
 
