@@ -36,7 +36,7 @@ def test_storage_control_after_parse(capsys, path_to_storage):
         }
     ]
     path = Path(__file__).parent
-    storage_control(data=data, source="sour.ce", verbose=False, to_html=path, to_pdf=path)
+    storage_control(data=data, source="sour.ce", verbose=False, to_html=path, to_pdf=path, colorize=False)
     captured = capsys.readouterr()
     assert Path(Path(path, "feed.html")).exists()
     assert Path(Path(path, "feed.pdf")).exists()
@@ -56,7 +56,7 @@ def test_storage_control_after_parse(capsys, path_to_storage):
         }
     ]
     path = Path(__file__).parent
-    storage_control(data=data, source="sour.ce", verbose=False, to_html=None, to_pdf=None)
+    storage_control(data=data, source="sour.ce", verbose=False, to_html=None, to_pdf=None, colorize=False)
     captured = capsys.readouterr()
     assert captured.out == f"[ERROR] The site sour.ce uses an " \
                            f"unsupported date format. " \
@@ -92,16 +92,22 @@ def test_storage_control_when_enter_date(capsys, path_to_storage):
         }
     ]
     path = Path(__file__).parent
-    storage_control(date="10001023", source=None, verbose=True, to_html=None, to_pdf=None, limit=1, json=True)
+    storage_control(
+        date="10001023", source=None, verbose=True, to_html=None, to_pdf=None, limit=1, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert captured.out == "[ERROR] No news was found for this date - 1000-10-23\n\n"
 
     # make file for test
-    storage_control(data=data, source="sour.ce", verbose=False, to_html=None, to_pdf=None)
+    storage_control(
+        data=data, source="sour.ce", verbose=False, to_html=None, to_pdf=None, colorize=False
+    )
     capsys.readouterr()
 
     path = Path(__file__).parent
-    storage_control(date="10001023", source=None, verbose=True, to_html=path, to_pdf=path, limit=1, json=True)
+    storage_control(
+        date="10001023", source=None, verbose=True, to_html=path, to_pdf=path, limit=1, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert Path(Path(path, "feed.html")).exists()
     assert Path(Path(path, "feed.pdf")).exists()
@@ -144,7 +150,9 @@ def test_storage_control_when_enter_date(capsys, path_to_storage):
                            "[INFO] A feed in PDF format was saved on the path: " \
                            f"{Path(path, 'feed.pdf')}\n\n"
 
-    storage_control(date="10001023", source=None, verbose=True, to_html=None, to_pdf=None, limit=0, json=True)
+    storage_control(
+        date="10001023", source=None, verbose=True, to_html=None, to_pdf=None, limit=0, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert captured.out == "[INFO] The news has been successfully extracted from the storage\n\n" \
                            "[ERROR] The limit is less than or equal to 0, news cannot be printed.\n\n"
@@ -179,16 +187,22 @@ def test_storage_control_when_enter_date_and_source(capsys, path_to_storage):
         }
     ]
     path = Path(__file__).parent
-    storage_control(date="10001023", source="sour.ce", verbose=True, to_html=None, to_pdf=None, limit=1, json=True)
+    storage_control(
+        date="10001023", source="sour.ce", verbose=True, to_html=None, to_pdf=None, limit=1, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert captured.out == "[ERROR] No news was found for this date - 1000-10-23\n\n"
 
     # make file for test
-    storage_control(data=data, source="sour.ce", verbose=False, to_html=None, to_pdf=None)
+    storage_control(
+        data=data, source="sour.ce", verbose=False, to_html=None, to_pdf=None, colorize=False
+    )
     capsys.readouterr()
 
     path = Path(__file__).parent
-    storage_control(date="10001023", source="sour.ce", verbose=True, to_html=path, to_pdf=path, limit=1, json=True)
+    storage_control(
+        date="10001023", source="sour.ce", verbose=True, to_html=path, to_pdf=path, limit=1, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert Path(Path(path, "feed.html")).exists()
     assert Path(Path(path, "feed.pdf")).exists()
@@ -231,7 +245,9 @@ def test_storage_control_when_enter_date_and_source(capsys, path_to_storage):
                            "[INFO] A feed in PDF format was saved on the path: " \
                            f"{Path(path, 'feed.pdf')}\n\n"
 
-    storage_control(date="10001023", source="sour.ce", verbose=True, to_html=None, to_pdf=None, limit=0, json=True)
+    storage_control(
+        date="10001023", source="sour.ce", verbose=True, to_html=None, to_pdf=None, limit=0, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert captured.out == "[INFO] The news has been successfully extracted from the storage\n\n" \
                            "[INFO] The news was searched in the " \
@@ -242,7 +258,9 @@ def test_storage_control_when_enter_date_and_source(capsys, path_to_storage):
     p = Path(path_to_storage, "1000-10", "1000-10-23", "1000-10-23_sour_ce.json")
     target = Path(path_to_storage, "1000-10", "1000-10-23", "1000-10-23_sou3_ce.json")
     p.rename(target)
-    storage_control(date="10001023", source="sour.ce", verbose=True, to_html=None, to_pdf=None, limit=1, json=True)
+    storage_control(
+        date="10001023", source="sour.ce", verbose=True, to_html=None, to_pdf=None, limit=1, json=True, colorize=False
+    )
     captured = capsys.readouterr()
     assert captured.out == "[ERROR] No news was founded for this date" \
                            " and: 1000-10-23, and this " \

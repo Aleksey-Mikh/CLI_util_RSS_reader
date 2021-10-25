@@ -16,7 +16,7 @@ class StorageManager:
     getting paths, and converting dates.
     """
 
-    def __init__(self, source, *, verbose, date=None, data=None):
+    def __init__(self, source, *, verbose, date=None, data=None, colorize):
         """
         Init StorageManager
         :param source: news source
@@ -28,6 +28,7 @@ class StorageManager:
         self.source = source
         self.data = data
         self.verbose = verbose
+        self.colorize = colorize
 
     def _get_abspath_to_storage(self):
         """
@@ -125,14 +126,14 @@ class DataManagerInStorageAfterParsing(StorageManager):
     Here the news is processed and added to the storage.
     """
 
-    def __init__(self, source, *, data, verbose):
+    def __init__(self, source, *, data, verbose, colorize):
         """
         Init DataManagerInStorageAfterParsing
         :param source: news source
         :param verbose: verbose mode
         :param data: data that need to write to the storage
         """
-        super().__init__(source, data=data, verbose=verbose)
+        super().__init__(source, data=data, verbose=verbose, colorize=colorize)
 
     def get_file_name(self, date):
         """
@@ -243,7 +244,7 @@ class FindManagerWhenEnterDate(StorageManager):
     A class that implements data search by date
     """
 
-    def __init__(self, source, *, date, verbose, json_flag, limit):
+    def __init__(self, source, *, date, verbose, json_flag, limit, colorize):
         """
         Init FindManagerWhenEnterDate
 
@@ -255,7 +256,7 @@ class FindManagerWhenEnterDate(StorageManager):
         """
         self.json_flag = json_flag
         self.limit = limit
-        super().__init__(source, date=date, verbose=verbose)
+        super().__init__(source, date=date, verbose=verbose, colorize=colorize)
 
     def get_content_by_paths(self, paths):
         """
@@ -366,7 +367,7 @@ class FindManagerWhenEnterDate(StorageManager):
             if self.verbose:
                 info_print("News will be printed in a standard format")
             for feed in data:
-                console_output_feed(feed)
+                console_output_feed(feed, self.colorize)
 
     @staticmethod
     def _news_was_not_founded(date):
@@ -397,7 +398,7 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
     A class that implements data search by date and source
     """
 
-    def __init__(self, source, *, date, verbose, json_flag, limit):
+    def __init__(self, source, *, date, verbose, json_flag, limit, colorize):
         """
         Init FindManagerWhenEnterDateAndSource
 
@@ -407,7 +408,7 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
         :param json_flag: --json value
         :param limit: --limit value
         """
-        super().__init__(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
+        super().__init__(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit, colorize=colorize)
 
     def get_file_name(self):
         """
@@ -438,7 +439,7 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
         else:
             if self.verbose:
                 info_print("News will be printed in a standard format")
-            console_output_feed(data)
+            console_output_feed(data, self.colorize)
 
     def slice_content_by_limit(self, data):
         """

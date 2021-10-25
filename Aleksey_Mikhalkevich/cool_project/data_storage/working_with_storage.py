@@ -34,7 +34,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
     """
     # after parsing, writing a data to the storage
     if data is not None and source is not None:
-        st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose)
+        st_manager = DataManagerInStorageAfterParsing(source, data=data, verbose=verbose, colorize=kwargs["colorize"])
         response_from_split_data_by_news = st_manager.split_data_by_news()
 
         if response_from_split_data_by_news is None:
@@ -53,7 +53,9 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
     # if user enter only a date
     elif date is not None and source is None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
-        st_manager = FindManagerWhenEnterDate(source, date=date, verbose=verbose, json_flag=json_flag, limit=limit)
+        st_manager = FindManagerWhenEnterDate(
+            source, date=date, verbose=verbose, json_flag=json_flag, limit=limit, colorize=kwargs["colorize"]
+        )
         paths = st_manager.check_news_by_date()
 
         if not paths:
@@ -77,7 +79,7 @@ def storage_control(*, date=None, source=None, data=None, verbose=None, **kwargs
     elif date is not None and source is not None:
         json_flag, limit = kwargs["json"], kwargs["limit"]
         st_manager = FindManagerWhenEnterDateAndSource(
-            source, date=date, verbose=verbose, json_flag=json_flag, limit=limit
+            source, date=date, verbose=verbose, json_flag=json_flag, limit=limit, colorize=kwargs["colorize"]
         )
         paths = st_manager.check_news_by_date()
         st_manager.date = st_manager.get_date_in_correct_format(date)

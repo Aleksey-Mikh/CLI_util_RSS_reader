@@ -1,7 +1,6 @@
 import shutil
 from math import ceil
 from pathlib import Path
-from unittest import mock
 
 import pytest
 
@@ -17,7 +16,7 @@ from cool_project.data_storage.storage_managers import (
 def init_SM():
     """init StorageManager"""
     data = ["data"]
-    st_manager = SM("sour.ce", verbose=True, data=data)
+    st_manager = SM("sour.ce", verbose=True, data=data, colorize=False)
     return st_manager
 
 
@@ -49,7 +48,7 @@ def init_DataManagerInStorageAfterParsing():
             "source_feed": None,
         }
     ]
-    st_manager = DataManagerInStorageAfterParsing("sour.ce", verbose=True, data=data)
+    st_manager = DataManagerInStorageAfterParsing("sour.ce", verbose=True, data=data, colorize=False)
     return st_manager
 
 
@@ -57,7 +56,7 @@ def init_DataManagerInStorageAfterParsing():
 def init_FindManagerWhenEnterDateAndSource():
     """init FindManagerWhenEnterDateAndSource"""
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1, colorize=False
     )
     return st_manager
 
@@ -66,7 +65,7 @@ def init_FindManagerWhenEnterDateAndSource():
 def init_FindManagerWhenEnterDate():
     """init FindManagerWhenEnterDate"""
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=1, colorize=False
     )
     return st_manager
 
@@ -244,7 +243,7 @@ def test_DataManagerInStorageAfterParsing_method_split_data_by_news(
             "author": None,
         }
     ]
-    st_manager = DataManagerInStorageAfterParsing("sour.ce", verbose=True, data=data)
+    st_manager = DataManagerInStorageAfterParsing("sour.ce", verbose=True, data=data, colorize=False)
     actual = st_manager.split_data_by_news()
     captured = capsys.readouterr()
 
@@ -309,7 +308,7 @@ def test_FindManagerWhenEnterDateAndSource_method_data_output(
                            "]\n"
 
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=None, limit=1
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=None, limit=1, colorize=False
     )
     data = [
         {
@@ -363,14 +362,14 @@ def test_FindManagerWhenEnterDateAndSource_method_slice_content_by_limit(
     assert actual == data[:-1]
 
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=None
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=None, colorize=False
     )
     actual = st_manager.slice_content_by_limit(data)
     capsys.readouterr()
     assert actual == data
 
     st_manager = FindManagerWhenEnterDateAndSource(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=-3
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=-3, colorize=False
     )
     st_manager.slice_content_by_limit(data)
     captured = capsys.readouterr()
@@ -402,21 +401,21 @@ def test_FindManagerWhenEnterDate_method_slice_content_by_limit(init_FindManager
     assert actual == [data[:-1]]
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=None
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=None, colorize=False
     )
     actual = st_manager.slice_content_by_limit([data])
     capsys.readouterr()
     assert actual == [data]
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=3
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=3, colorize=False
     )
     actual = st_manager.slice_content_by_limit([data])
     capsys.readouterr()
     assert actual == [data]
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=-1
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=True, limit=-1, colorize=False
     )
     st_manager.slice_content_by_limit([data])
     captured = capsys.readouterr()
@@ -449,7 +448,7 @@ def test_FindManagerWhenEnterDate_method_data_output(
                            "]\n"
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="1000-10-23", json_flag=None, limit=1
+        "sour.ce", verbose=True, date="1000-10-23", json_flag=None, limit=1, colorize=False
     )
     data = [
         {
@@ -500,7 +499,7 @@ def test_FindManagerWhenEnterDate_method_check_news_by_date(
                            "in a correct format\n\n"
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="10001023", json_flag=True, limit=1
+        "sour.ce", verbose=True, date="10001023", json_flag=True, limit=1, colorize=False
     )
     st_manager.check_news_by_date()
     captured = capsys.readouterr()

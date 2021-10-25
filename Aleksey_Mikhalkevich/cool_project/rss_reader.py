@@ -35,6 +35,7 @@ class RSSParser:
         self.date = argparse_params.date
         self.to_html = argparse_params.to_html
         self.to_pdf = argparse_params.to_pdf
+        self.colorize = argparse_params.colorize
         self.serializable_data = None
 
     @staticmethod
@@ -49,12 +50,15 @@ class RSSParser:
         parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
         parser.add_argument("source", nargs="?", default=None, type=str, help="Print version info")
         parser.add_argument("--version", action="version", version=f"Version {PROGRAM_VERSION}", help="RSS URL")
-        parser.add_argument("--json", action='store_true', help="Print result as JSON in stdout")
-        parser.add_argument("--verbose", action='store_true', help="Outputs verbose status messages")
+        parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
+        parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
         parser.add_argument("--limit", help="Limit news topics if this parameter provided")
         parser.add_argument("--date", help="Take a date in %Y%m%d format. Example: 20191206")
-        parser.add_argument("--to-html", help="This argument receives the path where new file will be saved.")
-        parser.add_argument("--to-pdf", help="This argument receives the path where new file will be saved.")
+        parser.add_argument("--to-html", help="This argument receives the path where new HTML file will be saved.")
+        parser.add_argument("--to-pdf", help="This argument receives the path where new PDF file will be saved.")
+        parser.add_argument(
+            "--colorize", action="store_true", help="That will print the result of the utility in colorized mode."
+        )
 
         args, unknown = parser.parse_known_args(args=args_for_argparse)
 
@@ -107,7 +111,7 @@ class RSSParser:
         elif self.date is not None:
             storage_control(
                 date=self.date, source=self.source, verbose=self.verbose,
-                json=self.json, limit=self.limit, to_html=self.to_html, to_pdf=self.to_pdf
+                json=self.json, limit=self.limit, to_html=self.to_html, to_pdf=self.to_pdf, colorize=self.colorize
             )
         elif self.source is None:
             if self.verbose:
@@ -131,11 +135,11 @@ class RSSParser:
         else:
             if self.verbose:
                 info_print("Output news in standard format")
-            console_output_feed(self.serializable_data)
+            console_output_feed(self.serializable_data, self.colorize)
 
         storage_control(
             data=self.serializable_data, source=self.source,
-            verbose=self.verbose, to_html=self.to_html, to_pdf=self.to_pdf
+            verbose=self.verbose, to_html=self.to_html, to_pdf=self.to_pdf, colorize=self.colorize
         )
 
     @intercept_errors

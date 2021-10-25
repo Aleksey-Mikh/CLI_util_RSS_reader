@@ -75,7 +75,7 @@ def calculate_terminal_size(word):
 
 def test_console_output_feed(capsys):
     """test for console_output_feed function"""
-    console_output_feed(DATA)
+    console_output_feed(DATA, False)
     captured = capsys.readouterr()
 
     first_line_1 = calculate_terminal_size("News 3")
@@ -110,7 +110,7 @@ def test_console_output_feed(capsys):
 
 def test_output_feed(capsys):
     """test for output_feed function"""
-    output_feed(DATA[1])
+    output_feed(DATA[1], False)
     captured = capsys.readouterr()
 
     first_line_1 = calculate_terminal_size("News 5")
