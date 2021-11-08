@@ -8,7 +8,7 @@ from cool_project.cervices.print_functions import error_print, info_print
 from cool_project.cervices.data_output import (
     console_output_feed, console_json_output
 )
-from cool_project.project_settings import LIST_OF_DATE_FORMATS
+from project_settings import LIST_OF_DATE_FORMATS
 
 
 class StorageManager:
@@ -35,7 +35,6 @@ class StorageManager:
     def _get_abspath_to_storage(self):
         """
         Getting the absolute path to this file.
-
         :return: absolute path to the file
         """
         abs_file_path = os.path.abspath(__file__)
@@ -47,7 +46,6 @@ class StorageManager:
     def write_to_storage(path, data):
         """
         Writing data to the storage by the received path.
-
         :param path: the path where the data should be stored
         :param data: storage data
         """
@@ -58,7 +56,6 @@ class StorageManager:
     def read_from_storage(path):
         """
         Reading data from storage by the received path.
-
         :param path: the path by which the data should be received
         """
         with open(path, encoding='utf-8') as File:
@@ -70,7 +67,6 @@ class StorageManager:
         """
         Creating a folder at the got path.
         If the folder already exists does nothing.
-
         :param path: the path where the folder should be created
         """
         if not Path(path).exists():
@@ -81,7 +77,6 @@ class StorageManager:
     def path_is_exists(path):
         """
         Check path exists.
-
         :param path: A path to check
         :return: True if a path exists, False if isn't exists
         """
@@ -92,7 +87,6 @@ class StorageManager:
         """
         Getting a new path from the old one with the addition
         of an arbitrary number of components.
-
         :param old_path: old_path
         :param args: an arbitrary number of components for new path
         :return: new path
@@ -105,7 +99,6 @@ class StorageManager:
         The method gets a string containing the date and
         converts it according to known formats.
         If the conversion failed returns None.
-
         :param date_str: a string containing the date
         :return: a date in format %Y-%m-%d or None
         """
@@ -144,7 +137,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
         The method that gets the correct date of creation of the news
         and the source of the news and generates
         the file name by which the news will be saved.
-
         :param date: the correct date of creation of the news
         :return: file name
         """
@@ -155,7 +147,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
     def make_dir_by_key(self, data_dict):
         """
         Creating folders in which news will be stored.
-
         :param data_dict: dictionary with news
         """
         self.make_dir(self._get_abspath_to_storage())
@@ -176,7 +167,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
         with the `update' flag,
         if there is no file, it runs the _write_or_update_data method
         with the `write' flag.
-
         :param data_dict: dictionary with news
         :param channel_data: channel data
         """
@@ -200,7 +190,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
         and writes to the beginning of the file only those
         data that are not yet in the file.
         If the flag is set to 'write', it writes data to a file.
-
         :param path: the path to the file
         :param channel_data: channel data
         :param list_of_news: list of news
@@ -230,7 +219,6 @@ class DataManagerInStorageAfterParsing(StorageManager):
         where the key is the date and the value is a list of news.
         if the site uses dates in an unsupported format,
         it throws an error and returns None
-
         :return: (channel_data, dict_for_data_saving) or None
         """
         dict_for_data_saving = {}
@@ -268,7 +256,6 @@ class FindManagerWhenEnterDate(StorageManager):
     def __init__(self, source, *, date, verbose, json_flag, limit, colorize):
         """
         Init FindManagerWhenEnterDate
-
         :param source: news source
         :param verbose: verbose mode
         :param date: the date on which you need to receive the news
@@ -283,7 +270,6 @@ class FindManagerWhenEnterDate(StorageManager):
         """
         A method that has received a list of paths corresponding
         to the date and collects news from files in this paths.
-
         :param paths: a list of paths
         :return: a list of dictionary with news
         """
@@ -298,7 +284,6 @@ class FindManagerWhenEnterDate(StorageManager):
         """
         The method that slice the list of news
         by the limit set by the user.
-
         :param list_of_content: a list of dictionary with news
         :return: a list of dictionary with news
         """
@@ -350,7 +335,6 @@ class FindManagerWhenEnterDate(StorageManager):
         """
         A method that verifies that there is news
         in the repository by the received date
-
         :return: False or list of paths
         """
         date_in_correct_format = self.get_date_in_correct_format(self.date)
@@ -374,16 +358,15 @@ class FindManagerWhenEnterDate(StorageManager):
                 paths = list(map(str, paths))
                 return paths
             else:
-                self._news_was_not_founded(date_in_correct_format)
+                self.news_was_not_founded(date_in_correct_format)
                 return False
         else:
-            self._news_was_not_founded(date_in_correct_format)
+            self.news_was_not_founded(date_in_correct_format)
             return False
 
     def data_output(self, data):
         """
         Output information on the terminal in JSON or standard format
-
         :param data: list with news
         """
         if self.json_flag:
@@ -398,21 +381,24 @@ class FindManagerWhenEnterDate(StorageManager):
             for feed in data:
                 console_output_feed(feed, self.colorize)
 
-    @staticmethod
-    def _news_was_not_founded(date):
+    def news_was_not_founded(self, date=None):
         """
         Error output when news by date is not found.
-
         :param date: date entered by the user
         """
-        error_print(f"No news was found for this date - {date}")
+        if self.source is not None:
+            error_print(
+                f"No news was founded for this date: "
+                f"{self.date}, and this source: {self.source}"
+            )
+        else:
+            error_print(f"No news was found for this date - {date}")
 
     @staticmethod
     def get_sources_from_data(list_of_data):
         """
         A method that receives a list of news and
         generates a list of sources of this news
-
         :param list_of_data: news list
         :return: list of news sources
         """
@@ -430,7 +416,6 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
     def __init__(self, source, *, date, verbose, json_flag, limit, colorize):
         """
         Init FindManagerWhenEnterDateAndSource
-
         :param source: news source
         :param verbose: verbose mode
         :param date: the date on which you need to receive the news.
@@ -445,26 +430,15 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
     def get_file_name(self):
         """
         A method that returns the file name by date and source
-
         :return: file_name
         """
         source = re.sub(r"\W", "_", self.source)
         file_name = f'{self.date}_{source}.json'
         return file_name
 
-    def news_was_not_founded(self):
-        """
-        Error output when news by date and source is not found.
-        """
-        error_print(
-            f"No news was founded for this date and: "
-            f"{self.date}, and this source: {self.source}"
-        )
-
     def data_output(self, data):
         """
         Output information on the terminal in JSON or standard format
-
         :param data: list with news
         """
         if self.json_flag:
@@ -480,7 +454,6 @@ class FindManagerWhenEnterDateAndSource(FindManagerWhenEnterDate):
         """
         The method that slice the list of news
         by the limit set by the user.
-
         :param data: a list of dictionary with news
         :return: a list of dictionary with news
         """

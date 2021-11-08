@@ -125,8 +125,7 @@ def test_console_output_feed(capsys):
 
 
 @pytest.mark.parametrize("news, colorize",
-                         [("News 5", False),
-                          ("News 6", True)]
+                         [("News 5", False),]
                          )
 def test_output_feed(capsys, news, colorize):
     """test for output_feed function"""

@@ -29,7 +29,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "rss_reader = cool_project.rss_reader:main",
+            "rss_reader = rss_reader:main",
         ],
     }
 )

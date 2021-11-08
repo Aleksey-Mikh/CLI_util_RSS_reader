@@ -1,7 +1,7 @@
 import pytest
 
-from cool_project.rss_reader import RSSParser, start_parsing
-from cool_project.project_settings import PROGRAM_VERSION
+from rss_reader import RSSParser, start_parsing
+from project_settings import PROGRAM_VERSION
 
 
 @pytest.mark.parametrize("args, expected",

@@ -155,12 +155,12 @@ def test_storage_control_when_enter_date(capsys, path_to_storage):
                            "[INFO] Conversion to HTML started\n\n" \
                            "[INFO] Conversion to HTML ended\n\n" \
                            "[INFO] A feed in HTML format was saved " \
-                           "on the path: {Path(path, 'feed.html')}\n\n" \
+                           f"on the path: {Path(path, 'feed.html')}\n\n" \
                            "[INFO] Fonts have been received\n\n" \
                            "[INFO] PDF generation started\n\n" \
                            "[INFO] PDF has been generated\n\n" \
                            "[INFO] A feed in PDF format was saved " \
-                           "on the path: {Path(path, 'feed.pdf')}\n\n"
+                           f"on the path: {Path(path, 'feed.pdf')}\n\n"
 
     storage_control(
         date="10001023", source=None, verbose=True, to_html=None,
@@ -207,8 +207,8 @@ def test_storage_control_when_enter_date_and_source(capsys, path_to_storage):
         to_pdf=None, limit=1, json=True, colorize=False
     )
     captured = capsys.readouterr()
-    assert captured.out == "[ERROR] No news was found for this date - " \
-                           "1000-10-23\n\n"
+    assert captured.out == "[ERROR] No news was founded for this date:" \
+                           " 10001023, and this source: sour.ce\n\n"
 
     # make file for test
     storage_control(
@@ -259,12 +259,12 @@ def test_storage_control_when_enter_date_and_source(capsys, path_to_storage):
                            "[INFO] Conversion to HTML started\n\n" \
                            "[INFO] Conversion to HTML ended\n\n" \
                            "[INFO] A feed in HTML format was saved " \
-                           "on the path: {Path(path, 'feed.html')}\n\n" \
+                           f"on the path: {Path(path, 'feed.html')}\n\n" \
                            "[INFO] Fonts have been received\n\n" \
                            "[INFO] PDF generation started\n\n" \
                            "[INFO] PDF has been generated\n\n" \
                            "[INFO] A feed in PDF format was saved " \
-                           "on the path: {Path(path, 'feed.pdf')}\n\n"
+                           f"on the path: {Path(path, 'feed.pdf')}\n\n"
 
     storage_control(
         date="10001023", source="sour.ce", verbose=True, to_html=None,
@@ -292,7 +292,7 @@ def test_storage_control_when_enter_date_and_source(capsys, path_to_storage):
     )
     captured = capsys.readouterr()
     assert captured.out == "[ERROR] No news was founded for this date" \
-                           " and: 1000-10-23, and this " \
+                           ": 1000-10-23, and this " \
                            "source: sour.ce\n\n"
 
     Path.unlink(Path(path, "feed.html"))

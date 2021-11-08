@@ -298,7 +298,7 @@ def test_FindManagerWhenEnterDateAndSource_method_news_was_not_founded(
     st_manager.news_was_not_founded()
     captured = capsys.readouterr()
     assert captured.out == "[ERROR] No news was founded " \
-                           "for this date and: 1000-10-23," \
+                           "for this date: 1000-10-23," \
                            " and this source: sour.ce\n\n"
 
 
@@ -472,10 +472,10 @@ def test_FindManagerWhenEnterDate_method_news_was_not_founded(
 ):
     """test for FindManagerWhenEnterDate method news_was_not_founded"""
     st_manager = init_FindManagerWhenEnterDate
-    st_manager._news_was_not_founded("1000-10-23")
+    st_manager.news_was_not_founded("1000-10-23")
     captured = capsys.readouterr()
-    assert captured.out == "[ERROR] No news was found for " \
-                           "this date - 1000-10-23\n\n"
+    assert captured.out == "[ERROR] No news was founded for this date:" \
+                           " 1000-10-23, and this source: sour.ce\n\n"
 
 
 def test_FindManagerWhenEnterDate_method_data_output(
@@ -550,7 +550,7 @@ def test_FindManagerWhenEnterDate_method_check_news_by_date(
                            "in a correct format\n\n"
 
     st_manager = FindManagerWhenEnterDate(
-        "sour.ce", verbose=True, date="10001023",
+        None, verbose=True, date="10001023",
         json_flag=True, limit=1, colorize=False
     )
     st_manager.check_news_by_date()

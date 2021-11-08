@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+lxml
+Jinja2
+fpdf
+pytest
+pytest-cov
+colorama

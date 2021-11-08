@@ -16,7 +16,7 @@ from cool_project.cervices.decorators import (
 from cool_project.cervices.print_functions import info_print, error_print
 from cool_project.serializers.serializers import serialization_data
 from cool_project.data_storage.working_with_storage import storage_control
-from cool_project.project_settings import PROGRAM_VERSION, HEADERS
+from project_settings import PROGRAM_VERSION, HEADERS
 
 
 class RSSParser:
